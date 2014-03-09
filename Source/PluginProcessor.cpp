@@ -17,6 +17,7 @@ const float defaultReverb = 1.0f;
 const bool defaultBypass = false;
 const float defaultRrate = 0.2;
 const bool defaultOld = true;
+const short defaultMode = 0;
 
 
 //==================================
@@ -31,6 +32,7 @@ NewProjectAudioProcessor::NewProjectAudioProcessor()
     reverb_volumn = defaultReverb;
     lastUIWidth = 800;
     lastUIHeight = 400;
+    mode = defaultMode;
 }
 
 NewProjectAudioProcessor::~NewProjectAudioProcessor()
@@ -60,21 +62,26 @@ void NewProjectAudioProcessor::setParameter (int index, float newValue)
             delay_sec = newValue;
             break;
         case ModeParam:
-            mode = newValue;
+            mode = static_cast<int>(newValue);
             break;
         case IntensityParam:
         intensity = newValue;
+            break;
         case RepeatParam:
         repeat_rate = newValue;
+            break;
         case ReverbParam:
         reverb_volumn = newValue;
+            break;
         case bypassParam:
+            // bypass = !bypass;
             if (newValue==1) {
                 bypass = true;
             }
             else bypass = false;
             break;
         case oldParam:
+            // old = !old;
             if (newValue==1) {
                 old = true;
             }
@@ -200,7 +207,7 @@ void NewProjectAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
         buffer.setDataToReferTo(input, 2, numSamples);
     }
     else {
-        
+        juce::AudioProcessor::processBlockBypassed(buffer, midiMessages);
     }
 
     // In case we have more outputs than inputs, we'll clear any output
@@ -216,6 +223,8 @@ void NewProjectAudioProcessor::processBlockBypassed(AudioSampleBuffer& buffer, M
     const int numSamples = buffer.getNumSamples();
     float ** input = buffer.getArrayOfChannels();
     const int numChannels = buffer.getNumChannels();
+    myMultiDelay -> setDelay(delay_sec);
+    myMultiDelay -> setMode(mode);
     myMultiDelay->processBypass(input, input, numSamples);
     buffer.setDataToReferTo(input, 2, numSamples);
 }

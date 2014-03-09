@@ -14,7 +14,7 @@
 
 //==============================================================================
 NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioProcessor* ownerFilter)
-: AudioProcessorEditor (ownerFilter),title("","Space Echo"),FBLabel("","FeedBack Gain:"),Bypass(false),intensityLabel("","Intensity:"),RrateLabel("","Repeat Rate:"),ReverbLabel("","Reverb Volumn:"),ModeLabel("","Mode Selector:"),Old(false)
+: AudioProcessorEditor (ownerFilter),title("","Space Echo"),FBLabel("","FeedBack Gain:"),intensityLabel("","Intensity:"),RrateLabel("","Repeat Rate:"),ReverbLabel("","Reverb Volumn:"),ModeLabel("","Mode Selector:"),Bypass(false),Old(false)
 {
     // This is where our plugin's editor size is set.
     addAndMakeVisible(FBGainSlider);
@@ -40,12 +40,16 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     addAndMakeVisible(ModeSlider);
     ModeSlider.setSliderStyle(Slider::Rotary);
     ModeSlider.addListener(this);
-    ModeSlider.setRange(0.0,5.0,1.0);
+    ModeSlider.setRange(0.0,4.0,1.0);
     
     
     addAndMakeVisible(BypassButton);
-    BypassButton.setButtonText("ByPass Mode");
+    BypassButton.setButtonText("ByPass");
     BypassButton.addListener(this);
+    
+    addAndMakeVisible(OldButton);
+    OldButton.setButtonText("Old");
+    OldButton.addListener(this);
     
     addAndMakeVisible(title);
     title.setColour(Label::textColourId, Colours::blue);
@@ -55,14 +59,20 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     
     resizeLimits.setSizeLimits(200, 200, 1000, 400);
     
-    setSize(900, 400);
+    setSize(700, 400);
     
     startTimer(50);
     
     FBLabel.attachToComponent(&FBGainSlider, true);
+    intensityLabel.attachToComponent(&intensitySlider, true);
+    ModeLabel.attachToComponent(&ModeSlider, true);
+    ReverbLabel.attachToComponent(&ReverbSlider, true);
+    RrateLabel.attachToComponent(&RrateSlider, true);
     
-    BypassButton.setClickingTogglesState(true);
-    OldButton.setClickingTogglesState(true);
+    
+    
+    //BypassButton.setClickingTogglesState(true);
+    //OldButton.setClickingTogglesState(true);
     
 }
 
@@ -85,8 +95,9 @@ void NewProjectAudioProcessorEditor::timerCallback()
 {
     NewProjectAudioProcessor * ourProcessor = getProcessor();
     
-    FBGainSlider.setValue(ourProcessor->fb_gain);
-    RrateSlider.setValue(ourProcessor->repeat_rate);
+    FBGainSlider.setValue(ourProcessor->fb_gain,sendNotificationSync);
+    RrateSlider.setValue(ourProcessor->repeat_rate,sendNotificationSync);
+    ModeSlider.setValue(ourProcessor->mode,sendNotificationSync);
     
 }
 
@@ -121,14 +132,14 @@ void NewProjectAudioProcessorEditor::paint (Graphics& g)
 void NewProjectAudioProcessorEditor::resized()
 {
     title.setBounds(10, 10, 100, 30);
-    intensitySlider.setBounds(100, 60, 100, 30);
-    RrateSlider.setBounds(100, 100, 100, 30);
-    ReverbSlider.setBounds(100, 150, 100, 30);
-    FBGainSlider.setBounds(100, 200, 100, 30);
-    BypassButton.setBounds(200, 500, 100, 40);
-    OldButton.setBounds(400, 500, 40, 40);
+    intensitySlider.setBounds(200, 60, 100, 30);
+    RrateSlider.setBounds(200, 100, 100, 30);
+    ReverbSlider.setBounds(200, 150, 100, 30);
+    FBGainSlider.setBounds(200, 200, 100, 30);
+    BypassButton.setBounds(200, 300, 60, 40);
+    OldButton.setBounds(200, 350, 40, 40);
     ModeSlider.setBounds(500, 300, 100, 40);
-    //resizer -> setBounds(getWidth() - 16 , getHeight() - 16 , 16, 16);
+    resizer -> setBounds(getWidth() - 16 , getHeight() - 16 , 16, 16);
     
 }
 

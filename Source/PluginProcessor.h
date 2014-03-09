@@ -65,6 +65,7 @@ public:
     //==============================================================================
     void getStateInformation (MemoryBlock& destData);
     void setStateInformation (const void* data, int sizeInBytes);
+    
     enum Param{
         DelayParam = 0 ,
         ModeParam,

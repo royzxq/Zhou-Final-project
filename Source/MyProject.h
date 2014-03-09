@@ -42,7 +42,7 @@ public:
     void setMode(int newMode);
     void process(float ** input, float ** output, int iBlocksize);
     void processBypass(float ** input, float ** output, int iBlocksize);
-    
+    void reset();
     enum mode
     {
         singleTap = 0 ,
@@ -51,7 +51,7 @@ public:
     };
     
 private:
-    const float MAX_DELAY = 0.5;
+    static const float MAX_DELAY;
     CRingBuffer<float> ** pTap1,
     ** pTap2,
     ** pTap3;

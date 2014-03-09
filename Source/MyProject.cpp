@@ -9,6 +9,7 @@
 */
 
 #include "MyProject.h"
+const float MultiTapDelay::MAX_DELAY = 0.5;
 
 void MultiTapDelay::setDelay(float newDelay1_sec)
 {
@@ -28,6 +29,7 @@ void MultiTapDelay::setMode(int idx)
             modeSelector = 2;
             break;
         default:
+            modeSelector = 1;
             break;
     }
 }
@@ -60,6 +62,14 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
     }
 }
 
+void MultiTapDelay::reset()
+{
+    for (int i =0 ; i < iNumChannel; i++) {
+        pTap1[i] -> resetInstance();
+        pTap2[i] -> resetInstance();
+        pTap3[i] -> resetInstance();
+    }
+}
 void MultiTapDelay::processBypass(float **input, float **output, int iBlocksize){
     if (modeSelector == 1) {
         for (int i = 0 ; i < iNumChannel; i++) {
