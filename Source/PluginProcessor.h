@@ -28,7 +28,7 @@ public:
     void prepareToPlay (double sampleRate, int samplesPerBlock);
     void releaseResources();
 
-    void processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages);
+    void processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages) override;
     void processBlockBypassed(AudioSampleBuffer& buffer, MidiBuffer& midiMessages) override;
     //==============================================================================
     AudioProcessorEditor* createEditor();

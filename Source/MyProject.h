@@ -61,7 +61,7 @@ private:
     float delay3_sample;
     float sample_rate;
     int iNumChannel;
-    int modeSelector;
+    mode modeSelector;
 
     
     

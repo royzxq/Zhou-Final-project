@@ -25,7 +25,7 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     addAndMakeVisible(intensitySlider);
     intensitySlider.setSliderStyle(Slider::LinearBar);
     intensitySlider.addListener(this);
-    intensitySlider.setRange(0.0, 2.0,0.1);
+    intensitySlider.setRange(0.07, 0.18,0.01);
     
     addAndMakeVisible(RrateSlider);
     RrateSlider.setSliderStyle(Slider::LinearBar);
@@ -98,6 +98,9 @@ void NewProjectAudioProcessorEditor::timerCallback()
     FBGainSlider.setValue(ourProcessor->fb_gain,sendNotificationSync);
     RrateSlider.setValue(ourProcessor->repeat_rate,sendNotificationSync);
     ModeSlider.setValue(ourProcessor->mode,sendNotificationSync);
+    ReverbSlider.setValue(ourProcessor->reverb_volumn);
+    intensitySlider.setValue(ourProcessor->delay_sec);
+    
     
 }
 
@@ -107,7 +110,7 @@ void NewProjectAudioProcessorEditor::sliderValueChanged(juce::Slider *slider)
         getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::FBParam, (float)FBGainSlider.getValue());
     }
     else if (slider == &intensitySlider){
-        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::IntensityParam, (float)intensitySlider.getValue());
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::DelayParam, (float)intensitySlider.getValue());
     }
     else if(slider == &RrateSlider)
     {
@@ -125,7 +128,7 @@ void NewProjectAudioProcessorEditor::sliderValueChanged(juce::Slider *slider)
 void NewProjectAudioProcessorEditor::paint (Graphics& g)
 {
     
-    g.fillAll (Colours::white);
+    g.fillAll (Colours::grey);
 
 }
 

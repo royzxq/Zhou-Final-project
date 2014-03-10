@@ -21,33 +21,24 @@ void MultiTapDelay::setDelay(float newDelay1_sec)
 
 void MultiTapDelay::setMode(int idx)
 {
-    switch (idx) {
-        case singleTap:
-            modeSelector = 1;
-            break;
-        case multiTap:
-            modeSelector = 2;
-            break;
-        default:
-            modeSelector = 1;
-            break;
-    }
+    modeSelector = static_cast<mode>(idx);
+    
 }
 
 void MultiTapDelay::process(float **input, float **output, int iBlocksize)
 {
-    if (modeSelector == 1) {
+    if (modeSelector == singleTap) {
         for (int i = 0 ; i < iNumChannel; i++) {
             for (int j = 0 ; j < iBlocksize; j++) {
                 pTap1[i]->putPostInc(input[i][j]);
                 pTap2[i]->putPostInc(input[i][j]);
                 pTap3[i]->putPostInc(input[i][j]);
                 output[i][j] = pTap1[i]->get(delay1_sample);
-                output[i][j] += input[i][j];
+                //output[i][j] += input[i][j];
             }
         }
     }
-    else if(modeSelector == 2){
+    else if(modeSelector == multiTap){
         for (int i = 0 ; i < iNumChannel; i++) {
             for (int j = 0 ; j < iBlocksize; j++) {
                 pTap1[i]->putPostInc(input[i][j]);
@@ -55,8 +46,17 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
                 pTap3[i]->putPostInc(input[i][j]);
                 output[i][j] = pTap1[i]->get(delay1_sample) + pTap2[i]->get(delay2_sample) + pTap3[i]->get(delay3_sample);
                 output[i][j] /= 3;
-                output[i][j] += input[i][j];
+                //output[i][j] += input[i][j];
 
+            }
+        }
+    }
+    else{
+        for (int i = 0 ; i < iNumChannel; i++) {
+            for (int j = 0 ; j < iBlocksize; j++) {
+                
+                output[i][j] = input[i][j];
+                
             }
         }
     }
