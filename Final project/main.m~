@@ -1,0 +1,7 @@
+input_wav = wavread('/Users/xinquanzhou/Desktop/sweep.wav');
+
+[numSample,numChannel] = size(input_wav);
+
+
+% delay with the interpolated value(maybe linear interpolation)
+
