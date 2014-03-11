@@ -12,18 +12,27 @@ public:
     m_iReadIdx(0),
     m_iWriteIdx(0),
     frac(0),
+    n(8),
     m_ptBuff(0)
     
     {
         assert(iBufferLengthInSamples > 0);
         
         m_ptBuff        = new T [m_iBuffLength];
+        langrang    = new T[n];
+        x_coordinate = new int[n];
+        for (int i = 0 ; i < n ; i++) {
+            x_coordinate[i] = i ;
+        }
         resetInstance();
     };
     
     virtual ~CRingBuffer ()
     {
         delete m_ptBuff;
+        delete langrang;
+        delete x_coordinate;
+        langrang = 0;
         m_ptBuff    = 0;
     };
     
@@ -60,7 +69,13 @@ public:
      */
     T getInterpolationPostInc()
     {
-        float result  = this->getPostInc()*(1-frac)+this->getPostInc()*(frac) ;
+        /*
+        for (int i = n ; i >= 0 ; i--) {
+            langrang[n-i] = getPastSamples(i);
+        }
+        T result = lagrangeInterp(x_coordinate,langrang,n,n+frac);
+         */
+        T result  = this->getPostInc()*(1-frac)+this->getPostInc()*(frac) ;
         return result;
     }
     /*! return the value at the current read index
@@ -126,6 +141,7 @@ public:
         int i = static_cast<int>(iNewReadIdx);
         int WriteIdx = getWriteIdx();
         if (i == iNewReadIdx) {
+            frac = 0 ;
             setReadIdx(WriteIdx - i);
             return;
         }
@@ -144,6 +160,33 @@ public:
     }
     
 private:
+    T getPastSamples(int nPastSample)
+    {
+        int k = m_iReadIdx - nPastSample;
+        if (k < 0) //make sure we don't flow back off the array
+            k += m_iBuffLength;
+        return m_ptBuff[k];
+    }
+    
+    T lagrangeInterp(int * x, T* y, int n, float xbar)
+    {
+        int i,j;
+        T fx=0.0;
+        float l=1.0;
+        for (i=0; i<n; i++)
+        {
+            l=1.0;
+            for (j=0; j<n; j++)
+            {
+                if (j != i)
+                    l *= (xbar-x[j])/(x[i]-x[j]);
+            }
+            fx += l*y[i];
+            
+        }
+        return (fx);
+    }
+
     void incIdx (int &iIdx, int iOffset = 1)
     {
         while ((iIdx + iOffset) < 0)
@@ -157,7 +200,10 @@ private:
     int m_iBuffLength,              //!< length of the internal buffer
     m_iReadIdx,                 //!< current read index
     m_iWriteIdx;                //!< current write index
-    float frac = 0 ;                // the fraction of interpolation
+    float frac;                // the fraction of interpolation
+    int n;
+    T * langrang;
+    int * x_coordinate;
     T   *m_ptBuff;                  //!< data buffer
 };
 #endif // __RingBuffer_hdr__

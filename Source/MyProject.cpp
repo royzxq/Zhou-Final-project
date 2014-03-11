@@ -42,7 +42,7 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
                 pTap2[i]->putPostInc(input[i][j]);
                 pTap3[i]->putPostInc(input[i][j]);
                 output[i][j] = pTap1[i]->getInterpolationPostInc();
-                //output[i][j] += input[i][j];
+                output[i][j] = input[i][j]/2 + output[i][j]/2;
             }
         }
     }
@@ -54,6 +54,7 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
                 pTap3[i]->putPostInc(input[i][j]);
                 output[i][j] = pTap1[i]->getInterpolationPostInc() + pTap2[i]->getInterpolationPostInc() + pTap3[i]->getInterpolationPostInc();
                 output[i][j] /= 3;
+                output[i][j] = input[i][j]/2 + output[i][j]/2;
                 //output[i][j] += input[i][j];
 
             }
