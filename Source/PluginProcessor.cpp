@@ -37,6 +37,7 @@ NewProjectAudioProcessor::NewProjectAudioProcessor()
 
 NewProjectAudioProcessor::~NewProjectAudioProcessor()
 {
+    
 }
 
 //==============================================================================
@@ -195,43 +196,42 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
 {
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
-    
+//    float ** input = buffer.getArrayOfChannels();
+//    const int numSamples = buffer.getNumSamples();
+//    const int numChannels = buffer.getNumChannels();
+//    for (int i =0 ; i < numSamples; i++) {
+//                   for (int j = 0 ; j < numChannels ; j++) {
+//                        float f = input[j][i];
+//                        if(f!=0){
+//                            int a = 0 ;
+//                        }
+//                    }
+//                }
+//    buffer.setDataToReferTo(input, 2, numSamples);
+//
     if (!bypass) {
         const int numSamples = buffer.getNumSamples();
-        float ** input = buffer.getArrayOfChannels();
-        const int numChannels = buffer.getNumChannels();
-
-        for (int i =0 ; i < numSamples; i++) {
-            for (int j = 0 ; j < numChannels ; j++) {
-                float f = input[j][i];
-                if(f!=0){
-                    int a = 0 ;
-                }
-            }
-        }
-
-        myMultiDelay -> setDelay(delay_sec);
-        myMultiDelay -> setMode(mode);
-        myMultiDelay -> process(input, input, numSamples);
+         float ** input = buffer.getArrayOfChannels();
+         const int numChannels = buffer.getNumChannels();
+     
+         myMultiDelay -> setDelay(delay_sec);
+         myMultiDelay -> setMode(mode);
+         myMultiDelay -> process(input, input, numSamples);
         
-        for (int i =0 ; i < numSamples; i++) {
-            for (int j = 0 ; j < numChannels ; j++) {
-                float f = input[j][i];
-            }
-        }
-        buffer.setDataToReferTo(input, 2, numSamples);
-    }
-    else {
-        juce::AudioProcessor::processBlockBypassed(buffer, midiMessages);
-    }
+         buffer.setDataToReferTo(input, 2, numSamples);
+     }
+     else {
+         juce::AudioProcessor::processBlockBypassed(buffer, midiMessages);
+     }
 
-    // In case we have more outputs than inputs, we'll clear any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
+// In case we have more outputs than inputs, we'll clear any output
+// channels that didn't contain input data, (because these aren't
+// guaranteed to be empty - they may contain garbage).
 //    for (int i = getNumInputChannels(); i < getNumOutputChannels(); ++i)
 //    {
 //        buffer.clear (i, 0, buffer.getNumSamples());
 //    }
+
 }
 void NewProjectAudioProcessor::processBlockBypassed(AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {

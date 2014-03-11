@@ -15,7 +15,7 @@
 
 class MultiTapDelay{
 public:
-    MultiTapDelay(float fs, int iChannel):sample_rate(fs),iNumChannel(iChannel),delay1_sec(0),ratio1(1.86),ratio2(2.72)
+    MultiTapDelay(float fs, int iChannel):delay1_sec(0),sample_rate(fs),iNumChannel(iChannel),ratio1(1.86),ratio2(2.72)
     {
         pTap1 = new CRingBuffer<float> *[iNumChannel];
         pTap2 = new CRingBuffer<float> *[iNumChannel];

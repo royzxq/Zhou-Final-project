@@ -40,7 +40,7 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     addAndMakeVisible(ModeSlider);
     ModeSlider.setSliderStyle(Slider::Rotary);
     ModeSlider.addListener(this);
-    ModeSlider.setRange(0.0,4.0,1.0);
+    ModeSlider.setRange(0.0,1.0,1.0);
     
     
     addAndMakeVisible(BypassButton);
@@ -84,9 +84,11 @@ void NewProjectAudioProcessorEditor::buttonClicked(Button * button)
 {
     if (button == &BypassButton) {
         Bypass = !Bypass;
+        getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::bypassParam, Bypass);
     }
     if (button == &OldButton) {
         Old = !Old;
+        getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::oldParam, Old);
     }
 
 }
@@ -95,9 +97,9 @@ void NewProjectAudioProcessorEditor::timerCallback()
 {
     NewProjectAudioProcessor * ourProcessor = getProcessor();
     
-    FBGainSlider.setValue(ourProcessor->fb_gain,sendNotificationSync);
-    RrateSlider.setValue(ourProcessor->repeat_rate,sendNotificationSync);
-    ModeSlider.setValue(ourProcessor->mode,sendNotificationSync);
+    FBGainSlider.setValue(ourProcessor->fb_gain);
+    RrateSlider.setValue(ourProcessor->repeat_rate);
+    ModeSlider.setValue(ourProcessor->mode);
     ReverbSlider.setValue(ourProcessor->reverb_volumn);
     intensitySlider.setValue(ourProcessor->delay_sec);
     
@@ -141,7 +143,7 @@ void NewProjectAudioProcessorEditor::resized()
     FBGainSlider.setBounds(200, 200, 100, 30);
     BypassButton.setBounds(200, 300, 60, 40);
     OldButton.setBounds(200, 350, 40, 40);
-    ModeSlider.setBounds(500, 300, 100, 40);
+    ModeSlider.setBounds(500, 300, 100, 100);
     resizer -> setBounds(getWidth() - 16 , getHeight() - 16 , 16, 16);
     
 }
