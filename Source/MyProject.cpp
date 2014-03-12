@@ -50,11 +50,11 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
         for (int i = 0 ; i < iNumChannel; i++) {
             for (int j = 0 ; j < iBlocksize; j++) {
                 output[i][j] = input[i][j] + (m_fFBgain*pTap1[i]->getPostInc());
-                output[i][j] /= 2;
+                output[i][j] /= 1.5;
 //                output[i][j] = input[i][j] + output[i][j] - (input[i][j] * output[i][j]);
-                pTap1[i]->putPostInc(input[i][j]);
-                pTap2[i]->putPostInc(input[i][j]);
-                pTap3[i]->putPostInc(input[i][j]);
+                pTap1[i]->putPostInc(output[i][j]);
+                pTap2[i]->putPostInc(output[i][j]);
+                pTap3[i]->putPostInc(output[i][j]);
             }
         }
     }
@@ -62,14 +62,14 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
         for (int i = 0 ; i < iNumChannel; i++) {
             for (int j = 0 ; j < iBlocksize; j++) {
                 
-                output[i][j] = (input[i][j] + (m_fFBgain*pTap1[i]->getPostInc()) + (m_fFBgain*pTap2[i]->getPostInc()) + (m_fFBgain*pTap3[i]->getPostInc()))/4;
+                output[i][j] = input[i][j] + ((m_fFBgain*pTap1[i]->getPostInc()) + (m_fFBgain*pTap2[i]->getPostInc()) + (m_fFBgain*pTap3[i]->getPostInc()))/3.33;
 
                 //output[i][j] = input[i][j] + output[i][j];
                 //output[i][j] += input[i][j];
                 
-                pTap1[i]->putPostInc(input[i][j]);
-                pTap2[i]->putPostInc(input[i][j]);
-                pTap3[i]->putPostInc(input[i][j]);
+                pTap1[i]->putPostInc(output[i][j]);
+                pTap2[i]->putPostInc(output[i][j]);
+                pTap3[i]->putPostInc(output[i][j]);
                 
             }
         }
