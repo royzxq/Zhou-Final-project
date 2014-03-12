@@ -15,7 +15,7 @@
 
 class MultiTapDelay{
 public:
-    MultiTapDelay(float fs, int iChannel):delay1_sec(0),sample_rate(fs),iNumChannel(iChannel),ratio1(1.86),ratio2(2.72)
+    MultiTapDelay(float fs, int iChannel):delay1_sec(0),sample_rate(fs),iNumChannel(iChannel),ratio1(1.86),ratio2(2.72), m_fFBgain(0.5)
     {
         pTap1 = new CRingBuffer<float> *[iNumChannel];
         pTap2 = new CRingBuffer<float> *[iNumChannel];
@@ -39,6 +39,7 @@ public:
         
     }
     void setDelay(float newDelay1_sec);
+    void setFBgain(float FBgain);
     void setMode(int newMode);
     void process(float ** input, float ** output, int iBlocksize);
     void processBypass(float ** input, float ** output, int iBlocksize);
@@ -63,10 +64,10 @@ private:
     int iNumChannel;
     mode modeSelector;
 
-    
-    
     float ratio1;
     float ratio2;
+    
+    float m_fFBgain;
     
     
 };
