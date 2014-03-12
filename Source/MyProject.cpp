@@ -33,6 +33,11 @@ void MultiTapDelay::setDelay(float newDelay1_sec)
     }
 }
 
+void MultiTapDelay::setFBgain(float Fbgain)
+{
+    m_fFBgain = Fbgain;
+}
+
 void MultiTapDelay::setMode(int idx)
 {
     modeSelector = static_cast<mode>(idx);
@@ -44,7 +49,7 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
     if (modeSelector == singleTap) {
         for (int i = 0 ; i < iNumChannel; i++) {
             for (int j = 0 ; j < iBlocksize; j++) {
-                output[i][j] = input[i][j] + pTap1[i]->getPostInc();
+                output[i][j] = input[i][j] + (m_fFBgain*pTap1[i]->getPostInc());
                 output[i][j] /= 2;
 //                output[i][j] = input[i][j] + output[i][j] - (input[i][j] * output[i][j]);
                 pTap1[i]->putPostInc(input[i][j]);
@@ -57,7 +62,7 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
         for (int i = 0 ; i < iNumChannel; i++) {
             for (int j = 0 ; j < iBlocksize; j++) {
                 
-                output[i][j] = (input[i][j] + pTap1[i]->getPostInc() + pTap2[i]->getPostInc() + pTap3[i]->getPostInc())/4;
+                output[i][j] = (input[i][j] + (m_fFBgain*pTap1[i]->getPostInc()) + (m_fFBgain*pTap2[i]->getPostInc()) + (m_fFBgain*pTap3[i]->getPostInc()))/4;
 
                 //output[i][j] = input[i][j] + output[i][j];
                 //output[i][j] += input[i][j];

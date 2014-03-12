@@ -25,7 +25,7 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     addAndMakeVisible(intensitySlider);
     intensitySlider.setSliderStyle(Slider::LinearBar);
     intensitySlider.addListener(this);
-    intensitySlider.setRange(0.07, 0.18,0.01);
+    intensitySlider.setRange(0.07, 2,0.01);
     
     addAndMakeVisible(RrateSlider);
     RrateSlider.setSliderStyle(Slider::LinearBar);
