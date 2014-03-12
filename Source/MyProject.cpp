@@ -19,11 +19,13 @@ void MultiTapDelay::setDelay(float newDelay1_sec)
     
     delay2_sample = delay1_sample * ratio1;
     delay3_sample = delay1_sample * ratio2;
+    int curent_wirte = pTap1[0]->getWriteIdx();
+    
     for (int i = 0 ; i < iNumChannel; i++) {
-        pTap1[i]->setDelayIdx(delay1_sample);
-        pTap2[i]->setDelayIdx(delay2_sample);
-        pTap3[i]->setDelayIdx(delay3_sample);
-        //output[i][j] += input[i][j];
+        pTap1[i]->setReadIdx(curent_wirte - static_cast<int> (delay1_sample));
+        pTap2[i]->setReadIdx(curent_wirte-static_cast<int>(delay2_sample) );
+        pTap3[i]->setReadIdx(curent_wirte - static_cast<int>(delay3_sample));
+        
     }
 }
 
@@ -41,7 +43,7 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
                 pTap1[i]->putPostInc(input[i][j]);
                 pTap2[i]->putPostInc(input[i][j]);
                 pTap3[i]->putPostInc(input[i][j]);
-                output[i][j] = pTap1[i]->getInterpolationPostInc();
+                output[i][j] = pTap1[i]->getPostInc();
                 output[i][j] = input[i][j]/2 + output[i][j]/2;
             }
         }
@@ -52,7 +54,7 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
                 pTap1[i]->putPostInc(input[i][j]);
                 pTap2[i]->putPostInc(input[i][j]);
                 pTap3[i]->putPostInc(input[i][j]);
-                output[i][j] = pTap1[i]->getInterpolationPostInc() + pTap2[i]->getInterpolationPostInc() + pTap3[i]->getInterpolationPostInc();
+                output[i][j] = pTap1[i]->getPostInc() + pTap2[i]->getPostInc() + pTap3[i]->getPostInc() ;
                 output[i][j] /= 3;
                 output[i][j] = input[i][j]/2 + output[i][j]/2;
                 //output[i][j] += input[i][j];
@@ -97,7 +99,7 @@ void MultiTapDelay::processBypass(float **input, float **output, int iBlocksize)
                 pTap1[i]->putPostInc(input[i][j]);
                 pTap2[i]->putPostInc(input[i][j]);
                 pTap3[i]->putPostInc(input[i][j]);
-                output[i][j] = pTap1[i]->getInterpolationPostInc() + pTap2[i]->getInterpolationPostInc() + pTap3[i]->getInterpolationPostInc();
+                output[i][j] = pTap1[i]->getPostInc() + pTap2[i]->getPostInc() + pTap3[i]->getPostInc();
                
                 output[i][j] = input[i][j];
                 

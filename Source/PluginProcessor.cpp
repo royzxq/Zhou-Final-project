@@ -16,7 +16,7 @@ const float defaultIntensity = 0.1f;
 const float defaultReverb = 1.0f;
 const bool defaultBypass = false;
 const float defaultRrate = 0.2;
-const bool defaultOld = true;
+const bool defaultOld = false;
 const short defaultMode = 0;
 
 
@@ -75,18 +75,19 @@ void NewProjectAudioProcessor::setParameter (int index, float newValue)
         reverb_volumn = newValue;
             break;
         case bypassParam:
-            // bypass = !bypass;
-            if (newValue==1) {
-                bypass = true;
-            }
-            else bypass = false;
+            bypass = !bypass;
+//            
+//            if (newValue==1) {
+//                bypass = true;
+//            }
+//            else bypass = false;
             break;
         case oldParam:
-            // old = !old;
-            if (newValue==1) {
-                old = true;
-            }
-            else old = false;
+            old = !old;
+//            if (newValue==1) {
+//                old = true;
+//            }
+//            else old = false;
             break;
         case FBParam:
             fb_gain = newValue;
@@ -183,6 +184,8 @@ void NewProjectAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     myMultiDelay = new MultiTapDelay(sampleRate,2);
+    myNoise = new WhiteNoiseGen(0,0.007);
+    myShaper = new WavShaper(1);
 }
 
 void NewProjectAudioProcessor::releaseResources()
@@ -190,25 +193,18 @@ void NewProjectAudioProcessor::releaseResources()
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
     delete  myMultiDelay;
+    delete myNoise;
+    delete myShaper;
+    myMultiDelay = 0 ;
+    myNoise = 0 ;
+    myShaper = 0 ;
 }
 
 void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
-//    float ** input = buffer.getArrayOfChannels();
-//    const int numSamples = buffer.getNumSamples();
-//    const int numChannels = buffer.getNumChannels();
-//    for (int i =0 ; i < numSamples; i++) {
-//                   for (int j = 0 ; j < numChannels ; j++) {
-//                        float f = input[j][i];
-//                        if(f!=0){
-//                            int a = 0 ;
-//                        }
-//                    }
-//                }
-//    buffer.setDataToReferTo(input, 2, numSamples);
-//
+
     if (!bypass) {
         const int numSamples = buffer.getNumSamples();
          float ** input = buffer.getArrayOfChannels();
@@ -217,8 +213,13 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
          myMultiDelay -> setDelay(delay_sec);
          myMultiDelay -> setMode(mode);
          myMultiDelay -> process(input, input, numSamples);
+        if (old) {
+            myNoise -> generate(input, numChannels, numSamples);
+            myShaper -> process(input, input, numChannels, numSamples);
+            
+        }
         
-         buffer.setDataToReferTo(input, 2, numSamples);
+         buffer.setDataToReferTo(input, numChannels, numSamples);
      }
      else {
          juce::AudioProcessor::processBlockBypassed(buffer, midiMessages);
@@ -237,7 +238,7 @@ void NewProjectAudioProcessor::processBlockBypassed(AudioSampleBuffer& buffer, M
 {
     const int numSamples = buffer.getNumSamples();
     float ** input = buffer.getArrayOfChannels();
-    const int numChannels = buffer.getNumChannels();
+    //const int numChannels = buffer.getNumChannels();
     myMultiDelay -> setDelay(delay_sec);
     myMultiDelay -> setMode(mode);
     myMultiDelay->processBypass(input, input, numSamples);

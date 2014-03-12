@@ -13,6 +13,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MyProject.h"
+#include "Noise.h"
 
 //==============================================================================
 /**
@@ -92,7 +93,8 @@ public:
 private:
     //==============================================================================
     MultiTapDelay * myMultiDelay;
-    
+    WhiteNoiseGen * myNoise;
+    WavShaper   * myShaper;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NewProjectAudioProcessor)
 };
 
