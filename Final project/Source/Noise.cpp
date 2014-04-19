@@ -13,7 +13,6 @@ void WhiteNoiseGen::generate(float ** noise,int numChannel, int len)
     float w = 1;
     float x1;
     float x2;
-    float noize;
    
     for (int i = 0 ; i < len ; i++) {
         w = 1;
@@ -26,9 +25,8 @@ void WhiteNoiseGen::generate(float ** noise,int numChannel, int len)
         w *= x1;
         for (int j = 0 ; j < numChannel; j++)
         {
-            noize += (w*sigma+mu);
-            noize /= 10;
-            noise[j][i] += noize;
+           
+            noise[j][i] += (w*sigma+mu);
         }
         
         

@@ -21,8 +21,7 @@
 class NewProjectAudioProcessorEditor  : public AudioProcessorEditor,
                                         public SliderListener,
                                         public Timer,
-                                        public ButtonListener,
-                                        public ComboBoxListener
+                                        public ButtonListener
 {
 public:
     NewProjectAudioProcessorEditor (NewProjectAudioProcessor* ownerFilter);
@@ -36,12 +35,9 @@ public:
     void resized() override;
     void buttonClicked (Button *) override;
     void sliderValueChanged(Slider * slide) override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
-    //void colourChanged() override;
 private:
     Label title,FBLabel,intensityLabel,RrateLabel,ReverbLabel,ModeLabel;
     Slider FBGainSlider,intensitySlider,RrateSlider,ReverbSlider,ModeSlider;
-    ComboBox ModeBox;
     TextButton BypassButton,OldButton;
     ScopedPointer<ResizableCornerComponent> resizer;
     ComponentBoundsConstrainer resizeLimits;

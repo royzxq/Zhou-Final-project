@@ -9,7 +9,7 @@
 */
 
 #include "MyProject.h"
-const float MultiTapDelay::MAX_DELAY = 10;
+const float MultiTapDelay::MAX_DELAY = 0.5;
 
 void MultiTapDelay::setDelay(float newDelay1_sec)
 {
@@ -19,23 +19,14 @@ void MultiTapDelay::setDelay(float newDelay1_sec)
     
     delay2_sample = delay1_sample * ratio1;
     delay3_sample = delay1_sample * ratio2;
-//    int curent_wirte = pTap1[0]->getWriteIdx();
+    int curent_wirte = pTap1[0]->getWriteIdx();
     
-    for (int i = 0 ; i < iNumChannel; i++)
-    {
-//        pTap1[i]->setReadIdx(curent_wirte - static_cast<int> (delay1_sample));
-//        pTap2[i]->setReadIdx(curent_wirte-static_cast<int>(delay2_sample) );
-//        pTap3[i]->setReadIdx(curent_wirte - static_cast<int>(delay3_sample));
-        pTap1[i]->setWriteIdx(static_cast<int> (delay1_sample) + pTap1[i]->getReadIdx());
-        pTap2[i]->setWriteIdx(static_cast<int>(delay2_sample) + pTap2[i]->getReadIdx());
-        pTap3[i]->setWriteIdx(static_cast<int>(delay3_sample) + pTap3[i]->getReadIdx());
+    for (int i = 0 ; i < iNumChannel; i++) {
+        pTap1[i]->setReadIdx(curent_wirte - static_cast<int> (delay1_sample));
+        pTap2[i]->setReadIdx(curent_wirte-static_cast<int>(delay2_sample) );
+        pTap3[i]->setReadIdx(curent_wirte - static_cast<int>(delay3_sample));
         
     }
-}
-
-void MultiTapDelay::setFBgain(float Fbgain)
-{
-    m_fFBgain = Fbgain;
 }
 
 void MultiTapDelay::setMode(int idx)
@@ -49,28 +40,25 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
     if (modeSelector == singleTap) {
         for (int i = 0 ; i < iNumChannel; i++) {
             for (int j = 0 ; j < iBlocksize; j++) {
-                output[i][j] = input[i][j] + (m_fFBgain*pTap1[i]->getPostInc());
-                output[i][j] /= 1.5;
-//                output[i][j] = input[i][j] + output[i][j] - (input[i][j] * output[i][j]);
-                pTap1[i]->putPostInc(output[i][j]);
-                pTap2[i]->putPostInc(output[i][j]);
-                pTap3[i]->putPostInc(output[i][j]);
+                pTap1[i]->putPostInc(input[i][j]);
+                pTap2[i]->putPostInc(input[i][j]);
+                pTap3[i]->putPostInc(input[i][j]);
+                output[i][j] = pTap1[i]->getPostInc();
+                output[i][j] = input[i][j]/2 + output[i][j]/2;
             }
         }
     }
     else if(modeSelector == multiTap){
         for (int i = 0 ; i < iNumChannel; i++) {
             for (int j = 0 ; j < iBlocksize; j++) {
-                
-                output[i][j] = input[i][j] + ((m_fFBgain*pTap1[i]->getPostInc()) + (m_fFBgain*pTap2[i]->getPostInc()) + (m_fFBgain*pTap3[i]->getPostInc()))/3.33;
-
-                //output[i][j] = input[i][j] + output[i][j];
+                pTap1[i]->putPostInc(input[i][j]);
+                pTap2[i]->putPostInc(input[i][j]);
+                pTap3[i]->putPostInc(input[i][j]);
+                output[i][j] = pTap1[i]->getPostInc() + pTap2[i]->getPostInc() + pTap3[i]->getPostInc() ;
+                output[i][j] /= 3;
+                output[i][j] = input[i][j]/2 + output[i][j]/2;
                 //output[i][j] += input[i][j];
-                
-                pTap1[i]->putPostInc(output[i][j]);
-                pTap2[i]->putPostInc(output[i][j]);
-                pTap3[i]->putPostInc(output[i][j]);
-                
+
             }
         }
     }
@@ -97,24 +85,23 @@ void MultiTapDelay::processBypass(float **input, float **output, int iBlocksize)
     if (modeSelector == 1) {
         for (int i = 0 ; i < iNumChannel; i++) {
             for (int j = 0 ; j < iBlocksize; j++) {
-                
-                output[i][j] = input[i][j];
                 pTap1[i]->putPostInc(input[i][j]);
                 pTap2[i]->putPostInc(input[i][j]);
                 pTap3[i]->putPostInc(input[i][j]);
+                
+                output[i][j] = input[i][j];
             }
         }
     }
     else if(modeSelector == 2){
         for (int i = 0 ; i < iNumChannel; i++) {
             for (int j = 0 ; j < iBlocksize; j++) {
-                output[i][j] = pTap1[i]->getPostInc() + pTap2[i]->getPostInc() + pTap3[i]->getPostInc();
-               
-                output[i][j] = input[i][j];
-                
                 pTap1[i]->putPostInc(input[i][j]);
                 pTap2[i]->putPostInc(input[i][j]);
                 pTap3[i]->putPostInc(input[i][j]);
+                output[i][j] = pTap1[i]->getPostInc() + pTap2[i]->getPostInc() + pTap3[i]->getPostInc();
+               
+                output[i][j] = input[i][j];
                 
             }
         }

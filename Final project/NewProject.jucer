@@ -12,19 +12,20 @@
               pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0">
   <MAINGROUP id="GkyBPD" name="NewProject">
     <GROUP id="{C0430495-5D60-1419-F8EE-111F989AB5F0}" name="Source">
-      <FILE id="HpVEmz" name="MyProject.cpp" compile="1" resource="0" file="Source/MyProject.cpp"/>
-      <FILE id="U3OKgi" name="MyProject.h" compile="0" resource="0" file="Source/MyProject.h"/>
-      <FILE id="D9kz2Q" name="Noise.cpp" compile="1" resource="0" file="Source/Noise.cpp"/>
-      <FILE id="Cn902T" name="Noise.h" compile="0" resource="0" file="Source/Noise.h"/>
-      <FILE id="tjjrnx" name="PluginEditor.cpp" compile="1" resource="0"
-            file="Source/PluginEditor.cpp"/>
-      <FILE id="nGKzgL" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
-      <FILE id="DA5vyl" name="PluginProcessor.cpp" compile="1" resource="0"
+      <FILE id="SjoEVu" name="Noise.cpp" compile="1" resource="0" file="Desktop/try/FinalProject/FinalProject/Noise.cpp"/>
+      <FILE id="wUij1h" name="Noise.h" compile="0" resource="0" file="Desktop/try/FinalProject/FinalProject/Noise.h"/>
+      <FILE id="i3CVUb" name="RingBuffer.h" compile="0" resource="0" file="/Volumes/Macintosh HD/Users/xinquanzhou/Source/RingBuffer.h"/>
+      <FILE id="IzMwIS" name="PluginTools.h" compile="0" resource="0" file="Desktop/PluginTools.h"/>
+      <FILE id="Qv6Tr2" name="Util.h" compile="0" resource="0" file="Desktop/ProjectTemplate/SharedSources/incl/Util.h"/>
+      <FILE id="llSiOk" name="MyProject.cpp" compile="1" resource="0" file="Source/MyProject.cpp"/>
+      <FILE id="zthjEl" name="MyProject.h" compile="0" resource="0" file="Source/MyProject.h"/>
+      <FILE id="bZgK2N" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
-      <FILE id="Hi8DtJ" name="PluginProcessor.h" compile="0" resource="0"
+      <FILE id="gtdfM6" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
-      <FILE id="mjIMSx" name="RingBuffer.h" compile="0" resource="0" file="Source/RingBuffer.h"/>
-      <FILE id="KCy4bu" name="Util.h" compile="0" resource="0" file="Source/Util.h"/>
+      <FILE id="fxtl0c" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="Es9ers" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
@@ -36,21 +37,21 @@
                        isDebug="0" optimisation="2" targetName="NewProject"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="/Users/xinquanzhou/Desktop/JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="/Users/xinquanzhou/Desktop/JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="/Users/xinquanzhou/Desktop/JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="/Users/xinquanzhou/Desktop/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="/Users/xinquanzhou/Desktop/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="/Users/xinquanzhou/Desktop/JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="/Users/xinquanzhou/Desktop/JUCE/modules"/>
-        <MODULEPATH id="juce_video" path="/Users/xinquanzhou/Desktop/JUCE/modules"/>
-        <MODULEPATH id="juce_opengl" path="/Users/xinquanzhou/Desktop/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="/Users/xinquanzhou/Desktop/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="/Users/xinquanzhou/Desktop/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="/Users/xinquanzhou/Desktop/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="/Users/xinquanzhou/Desktop/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="/Users/xinquanzhou/Desktop/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="/Users/xinquanzhou/Desktop/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="Desktop/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="Desktop/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="Desktop/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="Desktop/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="Desktop/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="Desktop/JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="Desktop/JUCE/modules"/>
+        <MODULEPATH id="juce_video" path="Desktop/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="Desktop/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="Desktop/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="Desktop/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="Desktop/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="Desktop/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="Desktop/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="Desktop/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>

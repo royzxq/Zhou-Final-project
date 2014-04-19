@@ -185,7 +185,7 @@ void NewProjectAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     // initialisation that you need..
     myMultiDelay = new MultiTapDelay(sampleRate,2);
     myNoise = new WhiteNoiseGen(0,0.007);
-    myShaper = new WavShaper(1.5);
+    myShaper = new WavShaper(1);
 }
 
 void NewProjectAudioProcessor::releaseResources()
@@ -210,14 +210,14 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
          float ** input = buffer.getArrayOfChannels();
          const int numChannels = buffer.getNumChannels();
      
-        myShaper -> process(input, input, numChannels, numSamples);
-        if (old) {
-            myNoise -> generate(input, numChannels, numSamples);
-        }
-         myMultiDelay -> setDelay(repeat_rate);
-        myMultiDelay -> setFBgain(fb_gain);
+         myMultiDelay -> setDelay(delay_sec);
          myMultiDelay -> setMode(mode);
          myMultiDelay -> process(input, input, numSamples);
+        if (old) {
+            myNoise -> generate(input, numChannels, numSamples);
+            myShaper -> process(input, input, numChannels, numSamples);
+            
+        }
         
          buffer.setDataToReferTo(input, numChannels, numSamples);
      }
@@ -240,7 +240,6 @@ void NewProjectAudioProcessor::processBlockBypassed(AudioSampleBuffer& buffer, M
     float ** input = buffer.getArrayOfChannels();
     //const int numChannels = buffer.getNumChannels();
     myMultiDelay -> setDelay(delay_sec);
-    myMultiDelay -> setFBgain(fb_gain);
     myMultiDelay -> setMode(mode);
     myMultiDelay->processBypass(input, input, numSamples);
     buffer.setDataToReferTo(input, 2, numSamples);
