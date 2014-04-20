@@ -12,11 +12,10 @@
               pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0">
   <MAINGROUP id="GkyBPD" name="NewProject">
     <GROUP id="{C0430495-5D60-1419-F8EE-111F989AB5F0}" name="Source">
-      <FILE id="SjoEVu" name="Noise.cpp" compile="1" resource="0" file="Desktop/try/FinalProject/FinalProject/Noise.cpp"/>
-      <FILE id="wUij1h" name="Noise.h" compile="0" resource="0" file="Desktop/try/FinalProject/FinalProject/Noise.h"/>
+      <FILE id="bxp21m" name="Util.h" compile="0" resource="0" file="/Volumes/Macintosh HD/Users/xinquanzhou/Zhou-Final-project/Final project/Source/Util.h"/>
+      <FILE id="PtC34R" name="Noise.cpp" compile="1" resource="0" file="/Volumes/Macintosh HD/Users/xinquanzhou/Source/Noise.cpp"/>
+      <FILE id="NxXYfP" name="Noise.h" compile="0" resource="0" file="/Volumes/Macintosh HD/Users/xinquanzhou/Source/Noise.h"/>
       <FILE id="i3CVUb" name="RingBuffer.h" compile="0" resource="0" file="/Volumes/Macintosh HD/Users/xinquanzhou/Source/RingBuffer.h"/>
-      <FILE id="IzMwIS" name="PluginTools.h" compile="0" resource="0" file="Desktop/PluginTools.h"/>
-      <FILE id="Qv6Tr2" name="Util.h" compile="0" resource="0" file="Desktop/ProjectTemplate/SharedSources/incl/Util.h"/>
       <FILE id="llSiOk" name="MyProject.cpp" compile="1" resource="0" file="Source/MyProject.cpp"/>
       <FILE id="zthjEl" name="MyProject.h" compile="0" resource="0" file="Source/MyProject.h"/>
       <FILE id="bZgK2N" name="PluginProcessor.cpp" compile="1" resource="0"

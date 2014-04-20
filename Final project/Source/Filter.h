@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include<cmath>
-#include "/Users/xinquanzhou/Desktop/backup/ProjectTemplate/SharedSources/incl/RingBuffer.h"
+#include "RingBuffer.h"
 class FilterBase{
 public:
 // the init parameters with maximum order 5
@@ -78,18 +78,6 @@ private:
 };
 
 
-// warm the wav by some transformation
-class WavShaper{
-public:
-    WavShaper(float newK):k(newK){}
-    void process(float * input, float * output, int kBlocksize)
-    {
-        for (int i = 0 ; i < kBlocksize; i++) {
-            output[i] = (1/atan(k))*atan(k*input[i]);
-        }
-    }
-private:
-    float k;
-};
+
 
 #endif /* defined(__FinalProject__Filter__) */

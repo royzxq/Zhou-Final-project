@@ -12,7 +12,7 @@
 #include <iostream>
 #include <time.h>
 #include <cmath>
-#include<stdlib.h>
+#include <stdlib.h>
 
 
 
@@ -37,15 +37,9 @@ private:
 class WavShaper{
 public:
     WavShaper(float newK):k(newK){}
-    void process(float ** input, float ** output, int numChannel, int kBlocksize)
-    {
-        for (int j = 0 ; j < numChannel; j++) {
-            for (int i = 0 ; i < kBlocksize; i++) {
-                output[j][i] = (1/atan(k))*atan(k*input[j][i]);
-            }
-
-        }
-    }
+    ~WavShaper() {}
+    void process(float ** input, float ** output, int numChannel, int kBlocksize);
+    
 private:
     float k;
 };
