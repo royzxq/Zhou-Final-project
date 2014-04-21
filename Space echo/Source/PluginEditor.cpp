@@ -20,12 +20,12 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     addAndMakeVisible(FBGainSlider);
     FBGainSlider.setSliderStyle(Slider::Rotary);
     FBGainSlider.addListener(this);
-    FBGainSlider.setRange(0.0, 2.0,0.1);
+    FBGainSlider.setRange(0.0, 2.0, 0.1);
     
     addAndMakeVisible(intensitySlider);
     intensitySlider.setSliderStyle(Slider::Rotary);
     intensitySlider.addListener(this);
-    intensitySlider.setRange(0.0, 1.0,0.1);
+    intensitySlider.setRange(0.0, 1.0, 0.1);
     
     addAndMakeVisible(RrateSlider);
     RrateSlider.setSliderStyle(Slider::Rotary);
@@ -35,7 +35,7 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     addAndMakeVisible(ReverbSlider);
     ReverbSlider.setSliderStyle(Slider::Rotary);
     ReverbSlider.addListener(this);
-    ReverbSlider.setRange(0.0, 1.0,0.1);
+    ReverbSlider.setRange(0.0, 1.0, 0.1);
     
     addAndMakeVisible(ModeSlider);
     ModeSlider.setSliderStyle(Slider::Rotary);
@@ -131,43 +131,69 @@ void NewProjectAudioProcessorEditor::timerCallback()
     
     
 }
-
+void NewProjectAudioProcessorEditor::startTimer(int intervalInMilliseconds)
+{
+    float newFBvalue = FBGainSlider.getValue();
+    if (fabs(newFBvalue-PreFBGain)>0.01) {
+        PreFBGain = 0.9 * PreFBGain + 0.1 * newFBvalue;
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::FBParam, PreFBGain);
+    }
+    else {
+        PreFBGain = newFBvalue;
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::FBParam, PreFBGain);
+    }
+    
+    float newIntvalue = intensitySlider.getValue();
+    if (fabs(newIntvalue-PreIntense)>0.01) {
+        PreIntense = 0.9 * PreIntense + 0.1 * newIntvalue;
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::IntensityParam, PreIntense);
+    }
+    else {
+        PreIntense = newIntvalue;
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::IntensityParam, PreIntense);
+    }
+    
+    float newRatevalue = RrateSlider.getValue();
+    if (fabs(newRatevalue-PreRate)>0.01) {
+        PreRate = 0.9 * PreRate + 0.1 * newRatevalue;
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::RepeatParam, PreRate);
+    }
+    else {
+        PreRate = newRatevalue;
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::RepeatParam, PreRate);
+    }
+    
+    float newReverbvalue = ReverbSlider.getValue();
+    if (fabs(newReverbvalue-PreReverb)>0.01) {
+        PreReverb = 0.9 * PreReverb + 0.1 * newReverbvalue;
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::ReverbParam, PreReverb);
+    }
+    else {
+        PreReverb = newReverbvalue ;
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::ReverbParam, PreReverb);
+    }
+    
+}
 void NewProjectAudioProcessorEditor::sliderValueChanged(juce::Slider *slider)
 {
-    float newValue = slider -> getValue();
+    startTimer(5);
+    
     if (slider == &FBGainSlider) {
-        while (abs(PreFBGain-newValue)>0.01) {
-            PreFBGain = 0.9 * PreFBGain + 0.1 * newValue;
-            getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::FBParam, PreFBGain);
-        }
-        PreFBGain = newValue;
         getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::FBParam, PreFBGain);
         
     }
     else if (slider == &intensitySlider){
-        while (abs(PreIntense-newValue)>0.01) {
-            PreIntense = 0.9 * PreIntense + 0.1 * newValue;
-            getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::IntensityParam, PreIntense);
-        }
-        PreIntense = newValue;
+       
         getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::IntensityParam, PreIntense);
     }
     else if(slider == &RrateSlider)
     {
-        while (abs(PreRate-newValue)>0.01) {
-            PreRate = 0.9 * PreRate + 0.1 * newValue;
-            getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::RepeatParam, PreRate);
-        }
-        PreRate = newValue;
+        
         getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::RepeatParam, PreRate);
     }
     else if(slider == & ReverbSlider)
     {
-        while (abs(PreReverb-newValue)>0.01) {
-            PreReverb = 0.9 * PreReverb + 0.1 * newValue;
-            getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::ReverbParam, PreReverb);
-        }
-        PreReverb = newValue;
+       
         getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::ReverbParam, PreReverb);
     }
     else if(slider == & ModeSlider){
