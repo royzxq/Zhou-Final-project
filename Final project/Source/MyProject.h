@@ -60,6 +60,7 @@ public:
     {
         singleTap = 0 ,
         multiTap,
+        noDelay,
         totalNumParams
     };
     

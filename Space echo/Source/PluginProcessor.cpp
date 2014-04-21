@@ -33,11 +33,13 @@ NewProjectAudioProcessor::NewProjectAudioProcessor()
     lastUIWidth = 700;
     lastUIHeight = 400;
     mode = defaultMode;
+    myReverb = new Reverb();
 }
 
 NewProjectAudioProcessor::~NewProjectAudioProcessor()
 {
-    
+    delete myReverb;
+    myReverb = 0 ;
 }
 
 //==============================================================================
@@ -201,29 +203,34 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
         const int numSamples = buffer.getNumSamples();
         float ** input = buffer.getArrayOfChannels();
         const int numChannels = buffer.getNumChannels();
-        
-        
-        myMultiDelay -> setDelay(repeat_rate);
-        myMultiDelay -> setFBgain(fb_gain);
-        myMultiDelay -> setMode(mode);
-        myMultiDelay -> process(input, input, numSamples);
-        //myShaper -> process(input, input, numChannels, numSamples);
-        if (old) {
-           // myNoise -> generate(input, numChannels, numSamples);
+        if (mode == 2) {
+            juce::Reverb::Parameters newParam;
+            newParam.roomSize = reverb_volumn;
+            newParam.damping = intensity;
+            newParam.wetLevel = 0.2;
+            newParam.dryLevel = 0.8;
+            newParam.width = 0.5;
+            newParam.freezeMode = 0.4;
+            myReverb -> setParameters(newParam);
+            myReverb -> processStereo(input[0], input[1], numSamples);
+
         }
+        else{
+            myMultiDelay -> setDelay(repeat_rate);
+            myMultiDelay -> setFBgain(fb_gain);
+            myMultiDelay -> setMode(mode);
+            myMultiDelay -> process(input, input, numSamples);
+        }
+        if (old) {
+           myNoise -> generate(input, numChannels, numSamples);
+        }
+        myShaper -> process(input, input, numChannels, numSamples);
+
         buffer.setDataToReferTo(input, numChannels, numSamples);
     }
     else {
         processBlockBypassed(buffer, midiMessages);
     }
-    
-    // In case we have more outputs than inputs, we'll clear any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    //    for (int i = getNumInputChannels(); i < getNumOutputChannels(); ++i)
-    //    {
-    //        buffer.clear (i, 0, buffer.getNumSamples());
-    //    }
     
 }
 void NewProjectAudioProcessor::processBlockBypassed(AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
@@ -234,7 +241,7 @@ void NewProjectAudioProcessor::processBlockBypassed(AudioSampleBuffer& buffer, M
     myMultiDelay -> setDelay(delay_sec);
     myMultiDelay -> setFBgain(fb_gain);
     myMultiDelay -> setMode(mode);
-    myMultiDelay->processBypass(input, input, numSamples);
+    myMultiDelay -> processBypass(input, input, numSamples);
     buffer.setDataToReferTo(input, 2, numSamples);
 }
 //==============================================================================

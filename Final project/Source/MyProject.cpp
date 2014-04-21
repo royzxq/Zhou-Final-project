@@ -141,4 +141,13 @@ void MultiTapDelay::processBypass(float **input, float **output, int iBlocksize)
             }
         }
     }
+    else {
+        for (int i = 0 ; i < iNumChannel; i++) {
+            for (int j = 0 ; j < iBlocksize; j++) {
+                
+                output[i][j] = input[i][j];
+                
+            }
+        }
+    }
 }

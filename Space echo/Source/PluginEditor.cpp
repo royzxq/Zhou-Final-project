@@ -25,7 +25,7 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     addAndMakeVisible(intensitySlider);
     intensitySlider.setSliderStyle(Slider::Rotary);
     intensitySlider.addListener(this);
-    intensitySlider.setRange(0.07, 2,0.01);
+    intensitySlider.setRange(0.0, 1.0,0.1);
     
     addAndMakeVisible(RrateSlider);
     RrateSlider.setSliderStyle(Slider::Rotary);
@@ -35,7 +35,7 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     addAndMakeVisible(ReverbSlider);
     ReverbSlider.setSliderStyle(Slider::Rotary);
     ReverbSlider.addListener(this);
-    ReverbSlider.setRange(0.0, 2.0,0.1);
+    ReverbSlider.setRange(0.0, 1.0,0.1);
     
     addAndMakeVisible(ModeSlider);
     ModeSlider.setSliderStyle(Slider::Rotary);
@@ -112,6 +112,10 @@ void NewProjectAudioProcessorEditor::comboBoxChanged(juce::ComboBox *comboBoxTha
         {
             getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::ModeParam, 1);
         }
+        else if (ModBox.getSelectedId() == 3)
+        {
+            getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::ModeParam, 2);
+        }
     }
 }
 
@@ -120,10 +124,10 @@ void NewProjectAudioProcessorEditor::timerCallback()
     NewProjectAudioProcessor * ourProcessor = getProcessor();
     
     FBGainSlider.setValue(ourProcessor->fb_gain);
-    RrateSlider.setValue(ourProcessor->repeat_rate);
+    RrateSlider.setValue(ourProcessor->delay_sec);
     ModeSlider.setValue(ourProcessor->mode);
     ReverbSlider.setValue(ourProcessor->reverb_volumn);
-    intensitySlider.setValue(ourProcessor->delay_sec);
+    intensitySlider.setValue(ourProcessor->intensity);
     
     
 }
