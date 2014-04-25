@@ -32,7 +32,7 @@ public:
     void releaseResources();
     
     void processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages) override;
-    void processBlockBypassed(AudioSampleBuffer& buffer, MidiBuffer& midiMessages) override;
+   
     //==============================================================================
     AudioProcessorEditor* createEditor();
     bool hasEditor() const;
@@ -78,6 +78,7 @@ public:
         oldParam,
         bypassParam,
         FBParam,
+        RangeParam,
         numParam
         
     };
@@ -87,6 +88,7 @@ public:
     float repeat_rate;
     float reverb_volumn;
     float fb_gain;
+    float InRange;
     bool bypass;
     bool old;
     int mode;

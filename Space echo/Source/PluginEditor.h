@@ -13,7 +13,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
-
+#include "juce_GroupComponent.h"
 //==============================================================================
 /**
  */
@@ -39,12 +39,14 @@ public:
     void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
     
 private:
-    Label title,FBLabel,intensityLabel,RrateLabel,ReverbLabel,ModeLabel;
-    Slider FBGainSlider,intensitySlider,RrateSlider,ReverbSlider,ModeSlider;
+    Label title,FBLabel,intensityLabel,RrateLabel,ReverbLabel,ModeLabel,SaturationLabel;
+    Slider FBGainSlider,intensitySlider,RrateSlider,ReverbSlider,ModeSlider,InputRangeSlider;
     ComboBox ModBox;
+    
     TextButton BypassButton,OldButton;
     ScopedPointer<ResizableCornerComponent> resizer;
     ComponentBoundsConstrainer resizeLimits;
+    GroupComponent DelayGroup,ReverbGroup;
     NewProjectAudioProcessor *getProcessor() const
     {
         return static_cast<NewProjectAudioProcessor*>(getAudioProcessor());

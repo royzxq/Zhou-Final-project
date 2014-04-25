@@ -36,12 +36,14 @@ private:
 
 class WavShaper{
 public:
-    WavShaper(float newK):k(newK){}
+    WavShaper(float newK):k(newK),inRange(1){}
     ~WavShaper() {}
     void process(float ** input, float ** output, int numChannel, int kBlocksize);
+    void setRange(float range);
     
 private:
     float k;
+    float inRange;
 };
 
 #endif /* defined(__FinalProject__Noise__) */

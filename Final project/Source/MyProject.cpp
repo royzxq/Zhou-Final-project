@@ -40,24 +40,31 @@ void MultiTapDelay::setFBgain(float Fbgain)
 
 void MultiTapDelay::setMode(int idx)
 {
+    if(idx==2 && iNumChannel!=2)
+        idx = 1;
     modeSelector = static_cast<mode>(idx);
     
 }
 
 void MultiTapDelay::process(float **input, float **output, int iBlocksize)
 {
-    if (modeSelector == singleTap) {
+    if (modeSelector == singleTap || modeSelector == singleTapwithReverb) {
         for (int i = 0 ; i < iNumChannel; i++) {
             for (int j = 0 ; j < iBlocksize; j++) {
                 pTap1[i]->putPostInc(input[i][j]);
                 pTap2[i]->putPostInc(input[i][j]);
                 pTap3[i]->putPostInc(input[i][j]);
+                float mm = input[i][j];
+                if (mm!=0) {
+                    mm ++;
+                }
                 output[i][j] =  m_fFBgain*oTap1[i]->getPostInc() + pTap1[i]->getPostInc();
+                float nn = output[i][j];
                 oTap1[i]->putPostInc(output[i][j]);
                 oTap2[i]->putPostInc(output[i][j]);
                 oTap3[i]->putPostInc(output[i][j]);
                 output[i][j] += input[i][j];
-                output[i][j] /= 2;
+                //output[i][j] /= 2;
 
             }
         }
@@ -79,6 +86,37 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
                 oTap3[i]->putPostInc(output[i][j]);
                 
                 output[i][j] += input[i][j];
+            }
+        }
+    }
+    else if (modeSelector == inversDelay)
+    {
+        float alfa = 0.5;
+        for (int j = 0 ; j < iBlocksize; j++) {
+            for (int i = 0 ; i < 2; i++) {
+                if (i == 1) {
+                    pTap1[i]->putPostInc(input[i][j]);
+                    pTap2[i]->putPostInc(input[i][j]);
+                    pTap3[i]->putPostInc(input[i][j]);
+                    output[i][j] =  alfa * m_fFBgain*oTap1[i]->getPostInc() + pTap1[i]->getPostInc() + (1 - alfa) * m_fFBgain*oTap1[1]->getPostInc();
+                    oTap1[i]->putPostInc(output[i][j]);
+                    oTap2[i]->putPostInc(output[i][j]);
+                    oTap3[i]->putPostInc(output[i][j]);
+                    output[i][j] += input[i][j];
+                    output[i][j] /= 2;
+                }
+                else{
+                    pTap1[i]->putPostInc(input[i][j]);
+                    pTap2[i]->putPostInc(input[i][j]);
+                    pTap3[i]->putPostInc(input[i][j]);
+                    output[i][j] =  alfa * m_fFBgain*oTap1[i]->getPostInc() + pTap1[i]->getPostInc() + (1 - alfa) * m_fFBgain*oTap1[0] ->getPostInc();
+                    oTap1[i]->putPostInc(output[i][j]);
+                    oTap2[i]->putPostInc(output[i][j]);
+                    oTap3[i]->putPostInc(output[i][j]);
+                    output[i][j] += input[i][j];
+                    output[i][j] /= 2;
+                    
+                }
             }
         }
     }
@@ -105,8 +143,10 @@ void MultiTapDelay::reset()
         
     }
 }
-void MultiTapDelay::processBypass(float **input, float **output, int iBlocksize){
-    if (modeSelector == singleTap) {
+/*
+void MultiTapDelay::processBypass(float **input, float **output, int iBlocksize)
+{
+    if (modeSelector == singleTap || modeSelector == singleTapwithReverb) {
         for (int i = 0 ; i < iNumChannel; i++) {
             for (int j = 0 ; j < iBlocksize; j++) {
                 
@@ -141,6 +181,37 @@ void MultiTapDelay::processBypass(float **input, float **output, int iBlocksize)
             }
         }
     }
+    else if (modeSelector == inversDelay)
+    {
+        float alfa = 0.5;
+        for (int j = 0 ; j < iBlocksize; j++) {
+            for (int i = 0 ; i < 2; i++) {
+                if (i == 1) {
+                    pTap1[i]->putPostInc(input[i][j]);
+                    pTap2[i]->putPostInc(input[i][j]);
+                    pTap3[i]->putPostInc(input[i][j]);
+                    output[i][j] =  alfa * m_fFBgain*oTap1[i]->getPostInc() + pTap1[i]->getPostInc() + (1 - alfa) * m_fFBgain*oTap1[1]->getPostInc();
+                    oTap1[i]->putPostInc(output[i][j]);
+                    oTap2[i]->putPostInc(output[i][j]);
+                    oTap3[i]->putPostInc(output[i][j]);
+                    output[i][j] += input[i][j];
+                    output[i][j] /= 2;
+                }
+                else{
+                    pTap1[i]->putPostInc(input[i][j]);
+                    pTap2[i]->putPostInc(input[i][j]);
+                    pTap3[i]->putPostInc(input[i][j]);
+                    output[i][j] =  alfa * m_fFBgain*oTap1[i]->getPostInc() + pTap1[i]->getPostInc() + (1 - alfa) * m_fFBgain*oTap1[0]->getPostInc();
+                    oTap1[i]->putPostInc(output[i][j]);
+                    oTap2[i]->putPostInc(output[i][j]);
+                    oTap3[i]->putPostInc(output[i][j]);
+                    output[i][j] += input[i][j];
+                    output[i][j] /= 2;
+
+                }
+            }
+        }
+    }
     else {
         for (int i = 0 ; i < iNumChannel; i++) {
             for (int j = 0 ; j < iBlocksize; j++) {
@@ -151,3 +222,4 @@ void MultiTapDelay::processBypass(float **input, float **output, int iBlocksize)
         }
     }
 }
+*/

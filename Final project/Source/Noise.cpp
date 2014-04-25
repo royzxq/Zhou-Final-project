@@ -35,13 +35,18 @@ void WhiteNoiseGen::generate(float ** noise,int numChannel, int len)
     }
 }
 
+void WavShaper::setRange(float range)
+{
+    inRange = range;
+}
 
 void WavShaper::process(float **input, float **output, int numChannel, int kBlocksize)
 {
     
         for (int j = 0 ; j < numChannel; j++) {
             for (int i = 0 ; i < kBlocksize; i++) {
-                output[j][i] = 2/(1+exp((-k)*input[j][i])) - 1 ;
+                output[j][i] = 2/(1+exp((-k)*input[j][i]/inRange)) - 1 ;
+                output[j][i] *= inRange;
             }
             
         }

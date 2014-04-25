@@ -18,7 +18,7 @@ const bool defaultBypass = false;
 const float defaultRrate = 0.2;
 const bool defaultOld = false;
 const short defaultMode = 0;
-
+const float defaultRange = 1.0;
 
 //==================================
 //==============================================================================
@@ -30,10 +30,12 @@ NewProjectAudioProcessor::NewProjectAudioProcessor()
     old = defaultOld;
     bypass = defaultBypass;
     reverb_volumn = defaultReverb;
+    InRange = defaultRange;
     lastUIWidth = 700;
     lastUIHeight = 400;
     mode = defaultMode;
     myReverb = new Reverb();
+    fb_gain = 1.5;
 }
 
 NewProjectAudioProcessor::~NewProjectAudioProcessor()
@@ -78,13 +80,15 @@ void NewProjectAudioProcessor::setParameter (int index, float newValue)
             break;
         case bypassParam:
             bypass = !bypass;
-            
             break;
         case oldParam:
             old = !old;
             break;
         case FBParam:
             fb_gain = newValue;
+            break;
+        case RangeParam:
+            InRange = newValue;
             break;
         default:
             break;
@@ -199,51 +203,75 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
     
-    if (!bypass) {
+    
         const int numSamples = buffer.getNumSamples();
         float ** input = buffer.getArrayOfChannels();
         const int numChannels = buffer.getNumChannels();
-        if (mode == 2) {
+    
+    for (int i = 0 ; i < numSamples; i++) {
+        float mm= input[0][i];
+        if(mm!=0)
+        {
+            mm++;
+        }
+    }
+        if (mode == 3) {
             juce::Reverb::Parameters newParam;
             newParam.roomSize = reverb_volumn;
             newParam.damping = intensity;
-            newParam.wetLevel = 0.2;
-            newParam.dryLevel = 0.8;
+            newParam.wetLevel = 1.0;
+            newParam.dryLevel = 0.1;
             newParam.width = 0.5;
             newParam.freezeMode = 0.4;
             myReverb -> setParameters(newParam);
             myReverb -> processStereo(input[0], input[1], numSamples);
 
         }
-        else{
+        else if(mode<3){
             myMultiDelay -> setDelay(repeat_rate);
             myMultiDelay -> setFBgain(fb_gain);
             myMultiDelay -> setMode(mode);
             myMultiDelay -> process(input, input, numSamples);
         }
+        else{
+            myMultiDelay -> setDelay(repeat_rate);
+            myMultiDelay -> setFBgain(fb_gain);
+            myMultiDelay -> setMode(0);
+            myMultiDelay -> process(input, input, numSamples);
+            juce::Reverb::Parameters newParam;
+            newParam.roomSize = reverb_volumn;
+            newParam.damping = intensity;
+            newParam.wetLevel = 1.0;
+            newParam.dryLevel = 0.1;
+            newParam.width = 0.5;
+            newParam.freezeMode = 0.4;
+            myReverb -> setParameters(newParam);
+            myReverb -> processStereo(input[0], input[1], numSamples);
+            
+        }
         if (old) {
            myNoise -> generate(input, numChannels, numSamples);
         }
+        
+        myShaper -> setRange(InRange);
+    
         myShaper -> process(input, input, numChannels, numSamples);
 
         buffer.setDataToReferTo(input, numChannels, numSamples);
-    }
-    else {
-        processBlockBypassed(buffer, midiMessages);
-    }
+    
     
 }
-void NewProjectAudioProcessor::processBlockBypassed(AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
-{
-    const int numSamples = buffer.getNumSamples();
-    float ** input = buffer.getArrayOfChannels();
-    //const int numChannels = buffer.getNumChannels();
-    myMultiDelay -> setDelay(delay_sec);
-    myMultiDelay -> setFBgain(fb_gain);
-    myMultiDelay -> setMode(mode);
-    myMultiDelay -> processBypass(input, input, numSamples);
-    buffer.setDataToReferTo(input, 2, numSamples);
-}
+//void NewProjectAudioProcessor::processBlockBypassed(AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
+//{
+//    const int numSamples = buffer.getNumSamples();
+//    float ** input = buffer.getArrayOfChannels();
+//    //const int numChannels = buffer.getNumChannels();
+//    myMultiDelay -> setDelay(delay_sec);
+//    myMultiDelay -> setFBgain(fb_gain);
+//    myMultiDelay -> setMode(mode);
+//    myMultiDelay -> processBypass(input, input, numSamples);
+//    buffer.setDataToReferTo(input, 2, numSamples);
+//}
 //==============================================================================
 bool NewProjectAudioProcessor::hasEditor() const
 {

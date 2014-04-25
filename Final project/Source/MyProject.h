@@ -15,7 +15,7 @@
 
 class MultiTapDelay{
 public:
-    MultiTapDelay(float fs, int iChannel):delay1_sec(0),sample_rate(fs),iNumChannel(iChannel),ratio1(1.86),ratio2(2.72), m_fFBgain(0.5)
+    MultiTapDelay(float fs, int iChannel):delay1_sec(0),sample_rate(fs),iNumChannel(iChannel),modeSelector(singleTap),ratio1(1.86),ratio2(2.72), m_fFBgain(1.1)
     {
         pTap1 = new CRingBuffer<float> *[iNumChannel];
         pTap2 = new CRingBuffer<float> *[iNumChannel];
@@ -60,7 +60,9 @@ public:
     {
         singleTap = 0 ,
         multiTap,
+        inversDelay,
         noDelay,
+        singleTapwithReverb,
         totalNumParams
     };
     
