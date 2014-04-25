@@ -14,7 +14,7 @@
 
 //==============================================================================
 NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioProcessor* ownerFilter)
-: AudioProcessorEditor (ownerFilter),title("","Space Echo"),FBLabel("","FeedBack Gain:"),intensityLabel("","Intensity:"),RrateLabel("","Repeat Rate:"),ReverbLabel("","Reverb Volumn:"),ModeLabel("","Select Sound Effect:"),SaturationLabel("","Saturation Level"), ModBox("Mode Selector Box"),DelayGroup("Delay parameter"),ReverbGroup("Reverb parameter"), Bypass(false),Old(false),PreIntense(0),PreFBGain(0),PreRate(0),PreReverb(0)
+: AudioProcessorEditor (ownerFilter),title("","Space Echo"),FBLabel("","FeedBack Gain:"),intensityLabel("","Intensity:"),RrateLabel("","Repeat Rate:"),ReverbLabel("","Reverb Volumn:"),ModeLabel("","Select Sound Effect:"),SaturationLabel("","Saturation Level"), HighpassLabel("","Highpass cutoff"),LowpassLabel("","Lowpass cutoff"), ModBox("Mode Selector Box"),DelayGroup("Delay parameter"),ReverbGroup("Reverb parameter"),FilterGroup("Filter cuttoffs"), HighPass(false),LowPass(false),Old(false),PreIntense(0.0),PreFBGain(0.0),PreRate(0.0),PreReverb(0.0)
 {
     // This is where our plugin's editor size is set.
     addAndMakeVisible(FBGainSlider);
@@ -48,6 +48,30 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     InputRangeSlider.setRange(0.0, 1.0, 0.1);
     InputRangeSlider.setValue(1.0);
     
+    addAndMakeVisible(HighPassSlider);
+    HighPassSlider.setSliderStyle(Slider::Rotary);
+    HighPassSlider.addListener(this);
+    HighPassSlider.setRange(0.0, 1.0, 0.1);
+    HighPassSlider.setValue(0.0);
+
+    addAndMakeVisible(LowPassSlider);
+    LowPassSlider.setSliderStyle(Slider::Rotary);
+    LowPassSlider.addListener(this);
+    LowPassSlider.setRange(0.0, 1.0, 0.1);
+    LowPassSlider.setValue(1.0);
+    
+    addAndMakeVisible(NormalButton);
+    NormalButton.setButtonText("No filter");
+    NormalButton.addListener(this);
+    
+    addAndMakeVisible(HighPassButton);
+    HighPassButton.setButtonText("Highpass");
+    HighPassButton.addListener(this);
+    
+    addAndMakeVisible(LowPassButton);
+    LowPassButton.setButtonText("Lowpass");
+    LowPassButton.addListener(this);
+    
     addAndMakeVisible(OldButton);
     OldButton.setButtonText("Hiss");
     OldButton.addListener(this);
@@ -71,6 +95,10 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     ReverbGroup.setTextLabelPosition(Justification::left);
     ReverbGroup.setText("Reverb Parameters");
     
+    addAndMakeVisible(FilterGroup);
+    FilterGroup.setTextLabelPosition(Justification::left);
+    FilterGroup.setText("Filter Paramters");
+    
     addAndMakeVisible(title);
     title.setColour(Label::textColourId, Colours::blue);
     title.setFont(Font(24.0f));
@@ -81,14 +109,16 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     addAndMakeVisible(ReverbLabel);
     addAndMakeVisible(ModeLabel);
     addAndMakeVisible(SaturationLabel);
+    addAndMakeVisible(HighpassLabel);
+    addAndMakeVisible(LowpassLabel);
     
     addAndMakeVisible(resizer = new ResizableCornerComponent(this,&resizeLimits));
     
     resizeLimits.setSizeLimits(200, 200, 1000, 400);
     
-    setSize(600, 420);
+    setSize(700, 500);
     
-    startTimer(500);
+    startTimer(50);
     
 //    FBLabel.attachToComponent(&FBGainSlider, true);
 //    intensityLabel.attachToComponent(&intensitySlider, true);
@@ -99,7 +129,9 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     SaturationLabel.attachToComponent(&InputRangeSlider, true);
     
     //BypassButton.setClickingTogglesState(true);
-    //OldButton.setClickingTogglesState(true);
+    OldButton.setClickingTogglesState(true);
+    HighPassButton.setClickingTogglesState(true);
+    LowPassButton.setClickingTogglesState(true);
     
 }
 
@@ -113,6 +145,26 @@ void NewProjectAudioProcessorEditor::buttonClicked(Button * button)
     if (button == &OldButton) {
         Old = !Old;
         getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::oldParam, Old);
+    }
+    if (button == &HighPassButton) {
+        HighPass = !HighPass;
+        if (HighPass) {
+            LowPass = false;
+        }
+        getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::HighPassParam, HighPass);
+    }
+    if (button == &LowPassButton) {
+        LowPass = !LowPass;
+        if (LowPass) {
+            HighPass = false;
+        }
+        getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::LowPassParam, LowPass);
+    }
+    if (button == &NormalButton) {
+        LowPass = false;
+        HighPass = false;
+        getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::HighPassParam, HighPass);
+        getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::LowPassParam, LowPass);
     }
     
 }
@@ -147,6 +199,8 @@ void NewProjectAudioProcessorEditor::timerCallback()
     RrateSlider.setValue(ourProcessor->delay_sec);
     ReverbSlider.setValue(ourProcessor->reverb_volumn);
     intensitySlider.setValue(ourProcessor->intensity);
+    HighPassSlider.setValue(ourProcessor->CutoffHigh);
+    LowPassSlider.setValue(ourProcessor->CutoffHigh);
     
     
 }
@@ -199,7 +253,6 @@ void NewProjectAudioProcessorEditor::sliderValueChanged(juce::Slider *slider)
     
     if (slider == &FBGainSlider) {
         getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::FBParam, slider->getValue());
-        
     }
     else if (slider == &intensitySlider){
         getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::IntensityParam,  slider->getValue());
@@ -214,9 +267,17 @@ void NewProjectAudioProcessorEditor::sliderValueChanged(juce::Slider *slider)
        
         getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::ReverbParam,  slider->getValue());
     }
-    else if (slider == & InputRangeSlider)
+    if (slider == & InputRangeSlider)
     {
         getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::RangeParam, InputRangeSlider.getValue());
+    }
+    else if(slider == & HighPassSlider)
+    {
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::CutoffHighParam, HighPassSlider.getValue());
+    }
+    else if(slider == & LowPassSlider)
+    {
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::CutoffLowParam, LowPassSlider.getValue());
     }
 }
 //==============================================================================
@@ -225,34 +286,54 @@ void NewProjectAudioProcessorEditor::paint (Graphics& g)
 
     g.fillAll (Colours::grey);
     g.setColour(Colours::yellowgreen);
-    g.fillRect(30, 50, 530, 360);
+    g.fillRect(20, 50, 660, 430);
     
     if (Old) {
-        OldButton.setColour(TextButton::ColourIds::buttonColourId, Colours::blue);
+        OldButton.setColour(0, Colours::blue);
     }
-    else OldButton.setColour(TextButton::ColourIds::buttonColourId, Colours::orchid);
-    
+    else OldButton.setColour(0, Colours::orchid);
+    if (HighPass) {
+        HighPassButton.setColour(1, Colours::blue);
+    }
+    else
+       HighPassButton.setColour(1, Colours::orchid);
+    if (LowPass) {
+        LowPassButton.setColour(1,Colours::blue);
+        
+    }
+    else LowPassButton.setColour(1,Colours::orchid);
 }
 
 void NewProjectAudioProcessorEditor::resized()
 {
     title.setBounds(15, 7, 150, 40);
-    ModeLabel.setBounds(40, 60, 120, 40);
-    ModBox.setBounds(165, 60, 150, 40);
+    ModeLabel.setBounds(40, 60, 140, 40);
+    ModBox.setBounds(185, 60, 150, 40);
     
-    DelayGroup.setBounds(290, 120, 240, 200);
-    ReverbGroup.setBounds(45, 120, 240, 200);
-    intensityLabel.setBounds(100, 135, 120, 30);
-    intensitySlider.setBounds(100, 165, 120, 40);
-    ReverbLabel.setBounds(100, 215, 120, 30);
-    ReverbSlider.setBounds(100, 245, 120, 40);
+    DelayGroup.setBounds(280, 120, 230, 200);
+    ReverbGroup.setBounds(45, 120, 230, 200);
+    FilterGroup.setBounds(515, 120, 150, 200);
     
-    RrateLabel.setBounds(350, 135, 120, 30);
-    RrateSlider.setBounds(350, 165, 120, 40);
-    FBLabel.setBounds(350, 215, 120, 30);
-    FBGainSlider.setBounds(350, 245, 120, 40);
+    intensityLabel.setBounds(100-5, 135, 120, 30);
+    intensitySlider.setBounds(100-5, 165, 120, 40);
+    ReverbLabel.setBounds(100-5, 215, 120, 30);
+    ReverbSlider.setBounds(100-5, 245, 120, 40);
+    
+    RrateLabel.setBounds(350-10, 135, 120, 30);
+    RrateSlider.setBounds(350-10, 165, 120, 40);
+    FBLabel.setBounds(350-10, 215, 120, 30);
+    FBGainSlider.setBounds(350-10, 245, 120, 40);
+    
+    HighpassLabel.setBounds(530, 135, 120, 30);
+    HighPassSlider.setBounds(530, 165, 120, 40);
+    LowpassLabel.setBounds(530, 215, 120, 30);
+    LowPassSlider.setBounds(530, 245, 120, 40);
+    
+    HighPassButton.setBounds(530, 340, 80, 30);
+    LowPassButton.setBounds(530, 390, 80, 30);
+    NormalButton.setBounds(530, 440, 80, 30);
     OldButton.setBounds(350, 350, 60, 30);
-    InputRangeSlider.setBounds(180,350,100,30);
+    InputRangeSlider.setBounds(170,350,100,30);
     //ModeSlider.setBounds(500, 300, 100, 100);
     resizer -> setBounds(getWidth() - 16 , getHeight() - 16 , 16, 16);
     

@@ -15,8 +15,9 @@
 #include "juce_Reverb.h"
 #include "MyProject.h"
 #include "Noise.h"
+#include "Filter.h"
 
-
+//class LowPass;
 //==============================================================================
 /**
  */
@@ -76,7 +77,10 @@ public:
         RepeatParam,
         ReverbParam,
         oldParam,
-        bypassParam,
+        HighPassParam,
+        LowPassParam,
+        CutoffHighParam,
+        CutoffLowParam,
         FBParam,
         RangeParam,
         numParam
@@ -89,8 +93,12 @@ public:
     float reverb_volumn;
     float fb_gain;
     float InRange;
+    float CutoffLow;
+    float CutoffHigh;
     bool bypass;
     bool old;
+    bool HighPass;
+    bool LowPass;
     int mode;
     
     int lastUIWidth,lastUIHeight;
@@ -100,6 +108,8 @@ private:
     WhiteNoiseGen * myNoise;
     WavShaper   * myShaper;
     Reverb * myReverb;
+    class LowPass *myLowPass;
+    class HighPass * myHighPass;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NewProjectAudioProcessor)
 };
 

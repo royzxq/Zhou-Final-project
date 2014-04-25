@@ -29,13 +29,17 @@ NewProjectAudioProcessor::NewProjectAudioProcessor()
     repeat_rate = defaultRrate;
     old = defaultOld;
     bypass = defaultBypass;
+    HighPass = false;
+    LowPass = false;
     reverb_volumn = defaultReverb;
     InRange = defaultRange;
+    CutoffHigh = 0.0;
+    CutoffLow = 1.0;
     lastUIWidth = 700;
     lastUIHeight = 400;
     mode = defaultMode;
     myReverb = new Reverb();
-    fb_gain = 1.5;
+   // fb_gain = 0.5;
 }
 
 NewProjectAudioProcessor::~NewProjectAudioProcessor()
@@ -78,8 +82,19 @@ void NewProjectAudioProcessor::setParameter (int index, float newValue)
         case ReverbParam:
             reverb_volumn = newValue;
             break;
-        case bypassParam:
-            bypass = !bypass;
+        case HighPassParam:
+            HighPass = !HighPass;
+            LowPass = false;
+            break;
+        case LowPassParam:
+            LowPass = ! LowPass;
+            HighPass = false;
+            break;
+        case CutoffHighParam:
+            CutoffHigh = newValue;
+            break;
+        case CutoffLowParam:
+            CutoffLow = newValue;
             break;
         case oldParam:
             old = !old;
@@ -182,6 +197,8 @@ void NewProjectAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     myMultiDelay = new MultiTapDelay(sampleRate,2);
+    myHighPass = new class HighPass(CutoffHigh,2);
+    myLowPass = new class LowPass(CutoffLow,2);
     myNoise = new WhiteNoiseGen(0,0.007);
     myShaper = new WavShaper(4);
 }
@@ -193,6 +210,10 @@ void NewProjectAudioProcessor::releaseResources()
     delete  myMultiDelay;
     delete myNoise;
     delete myShaper;
+    delete myLowPass;
+    delete myHighPass;
+    LowPass = 0;
+    myHighPass = 0;
     myMultiDelay = 0 ;
     myNoise = 0 ;
     myShaper = 0 ;
@@ -208,13 +229,7 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
         float ** input = buffer.getArrayOfChannels();
         const int numChannels = buffer.getNumChannels();
     
-    for (int i = 0 ; i < numSamples; i++) {
-        float mm= input[0][i];
-        if(mm!=0)
-        {
-            mm++;
-        }
-    }
+   
         if (mode == 3) {
             juce::Reverb::Parameters newParam;
             newParam.roomSize = reverb_volumn;
@@ -254,9 +269,17 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
         }
         
         myShaper -> setRange(InRange);
-    
+        
         myShaper -> process(input, input, numChannels, numSamples);
-
+        if (HighPass) {
+            myHighPass -> setCutoff(CutoffHigh);
+            myHighPass -> process(input, input, numSamples);
+        }
+        else if (LowPass)
+        {
+            myLowPass -> setCutoff(CutoffLow);
+            myLowPass -> process(input, input, numSamples);
+        }
         buffer.setDataToReferTo(input, numChannels, numSamples);
     
     

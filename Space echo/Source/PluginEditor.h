@@ -39,19 +39,21 @@ public:
     void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
     
 private:
-    Label title,FBLabel,intensityLabel,RrateLabel,ReverbLabel,ModeLabel,SaturationLabel;
-    Slider FBGainSlider,intensitySlider,RrateSlider,ReverbSlider,ModeSlider,InputRangeSlider;
+    Label title,FBLabel,intensityLabel,RrateLabel,ReverbLabel,ModeLabel,SaturationLabel,HighpassLabel,LowpassLabel;
+    Slider FBGainSlider,intensitySlider,RrateSlider,ReverbSlider,ModeSlider,InputRangeSlider,HighPassSlider,LowPassSlider;
     ComboBox ModBox;
     
-    TextButton BypassButton,OldButton;
+    TextButton OldButton;
+    TextButton NormalButton,HighPassButton,LowPassButton;
     ScopedPointer<ResizableCornerComponent> resizer;
     ComponentBoundsConstrainer resizeLimits;
-    GroupComponent DelayGroup,ReverbGroup;
+    GroupComponent DelayGroup,ReverbGroup,FilterGroup;
     NewProjectAudioProcessor *getProcessor() const
     {
         return static_cast<NewProjectAudioProcessor*>(getAudioProcessor());
     }
-    bool Bypass;
+    bool HighPass;
+    bool LowPass;
     bool Old;
     
     float PreIntense;
