@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="KdxPpz" name="Space echo" projectType="audioplug" version="1.0.0"
+<JUCERPROJECT id="KdxPpz" name="PSYeCHO" projectType="audioplug" version="1.0.0"
               bundleIdentifier="com.yourcompany.Spaceecho" includeBinaryInAppConfig="1"
               buildVST="1" buildVST3="0" buildAU="0" buildRTAS="0" buildAAX="0"
               pluginName="Space echo" pluginDesc="Space echo" pluginManufacturer="Xinquan Zhou"
@@ -11,7 +11,7 @@
               pluginAUExportPrefix="SpaceechoAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.Spaceecho"
               pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0"
               companyName="Xinquan Zhou">
-  <MAINGROUP id="jQsDj4" name="Space echo">
+  <MAINGROUP id="jQsDj4" name="PSYeCHO">
     <GROUP id="{F9643728-3930-6BA4-F803-22C1E8D6ED8B}" name="Source">
       <FILE id="qVbsry" name="Filter.cpp" compile="1" resource="0" file="../Final project/Source/Filter.cpp"/>
       <FILE id="Vx8uYS" name="Filter.h" compile="0" resource="0" file="../Final project/Source/Filter.h"/>

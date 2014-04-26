@@ -14,7 +14,7 @@
 
 //==============================================================================
 NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioProcessor* ownerFilter)
-: AudioProcessorEditor (ownerFilter),title("","Space Echo"),FBLabel("","FeedBack Gain:"),intensityLabel("","Intensity:"),RrateLabel("","Repeat Rate:"),ReverbLabel("","Reverb Volumn:"),ModeLabel("","Select Sound Effect:"),SaturationLabel("","Saturation Level"), HighpassLabel("","Highpass cutoff"),LowpassLabel("","Lowpass cutoff"), ModBox("Mode Selector Box"),DelayGroup("Delay parameter"),ReverbGroup("Reverb parameter"),FilterGroup("Filter cuttoffs"), HighPass(false),LowPass(false),Old(false),PreIntense(0.0),PreFBGain(0.0),PreRate(0.0),PreReverb(0.0)
+: AudioProcessorEditor (ownerFilter),title("","PSYeCHO"),FBLabel("","FeedBack Gain:"),intensityLabel("","Intensity:"),RrateLabel("","Repeat Rate:"),ReverbLabel("","Reverb Volumn:"),ModeLabel("","Select Sound Effect:"),SaturationLabel("","Saturation Level"), HighShelvingLabel("","HighShelving cutoff"),LowShelvingLabel("","Gain"), ModBox("Mode Selector Box"),DelayGroup("Delay parameter"),ReverbGroup("Reverb parameter"),FilterGroup("Filter cuttoffs"), HighShelving(false),LowShelving(false),Old(false),PreIntense(0.0),PreFBGain(0.0),PreRate(0.0),PreReverb(0.0)
 {
     // This is where our plugin's editor size is set.
     addAndMakeVisible(FBGainSlider);
@@ -48,29 +48,29 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     InputRangeSlider.setRange(0.0, 1.0, 0.1);
     InputRangeSlider.setValue(1.0);
     
-    addAndMakeVisible(HighPassSlider);
-    HighPassSlider.setSliderStyle(Slider::Rotary);
-    HighPassSlider.addListener(this);
-    HighPassSlider.setRange(0.0, 1.0, 0.1);
-    HighPassSlider.setValue(0.0);
+    addAndMakeVisible(HighShelvingSlider);
+    HighShelvingSlider.setSliderStyle(Slider::Rotary);
+    HighShelvingSlider.addListener(this);
+    HighShelvingSlider.setRange(0.0, 1.0, 0.1);
+    HighShelvingSlider.setValue(0.0);
 
-    addAndMakeVisible(LowPassSlider);
-    LowPassSlider.setSliderStyle(Slider::Rotary);
-    LowPassSlider.addListener(this);
-    LowPassSlider.setRange(0.0, 1.0, 0.1);
-    LowPassSlider.setValue(1.0);
+    addAndMakeVisible(ShelvingGainSlider);
+    ShelvingGainSlider.setSliderStyle(Slider::Rotary);
+    ShelvingGainSlider.addListener(this);
+    ShelvingGainSlider.setRange(-15.0, 15.0, 0.1);
+    ShelvingGainSlider.setValue(6.0);
     
     addAndMakeVisible(NormalButton);
     NormalButton.setButtonText("No filter");
     NormalButton.addListener(this);
     
-    addAndMakeVisible(HighPassButton);
-    HighPassButton.setButtonText("Highpass");
-    HighPassButton.addListener(this);
+    addAndMakeVisible(HighShelvingButton);
+    HighShelvingButton.setButtonText("HighShelving");
+    HighShelvingButton.addListener(this);
     
-    addAndMakeVisible(LowPassButton);
-    LowPassButton.setButtonText("Lowpass");
-    LowPassButton.addListener(this);
+    addAndMakeVisible(LowShelvingButton);
+    LowShelvingButton.setButtonText("LowShelving");
+    LowShelvingButton.addListener(this);
     
     addAndMakeVisible(OldButton);
     OldButton.setButtonText("Hiss");
@@ -109,8 +109,8 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     addAndMakeVisible(ReverbLabel);
     addAndMakeVisible(ModeLabel);
     addAndMakeVisible(SaturationLabel);
-    addAndMakeVisible(HighpassLabel);
-    addAndMakeVisible(LowpassLabel);
+    addAndMakeVisible(HighShelvingLabel);
+    addAndMakeVisible(LowShelvingLabel);
     
     addAndMakeVisible(resizer = new ResizableCornerComponent(this,&resizeLimits));
     
@@ -128,11 +128,10 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     
     SaturationLabel.attachToComponent(&InputRangeSlider, true);
     
-    //BypassButton.setClickingTogglesState(true);
-    OldButton.setClickingTogglesState(true);
-    HighPassButton.setClickingTogglesState(true);
-    LowPassButton.setClickingTogglesState(true);
-    
+    //ByShelvingButton.setClickingTogglesState(true);
+    //OldButton.setClickingTogglesState(true);
+    //HighShelvingButton.setClickingTogglesState(true);
+    //LowShelvingButton.setClickingTogglesState(true);
 }
 
 NewProjectAudioProcessorEditor::~NewProjectAudioProcessorEditor()
@@ -146,25 +145,25 @@ void NewProjectAudioProcessorEditor::buttonClicked(Button * button)
         Old = !Old;
         getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::oldParam, Old);
     }
-    if (button == &HighPassButton) {
-        HighPass = !HighPass;
-        if (HighPass) {
-            LowPass = false;
+    if (button == &HighShelvingButton) {
+        HighShelving = !HighShelving;
+        if (HighShelving) {
+            LowShelving = false;
         }
-        getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::HighPassParam, HighPass);
+        getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::HighShelvingParam, HighShelving);
     }
-    if (button == &LowPassButton) {
-        LowPass = !LowPass;
-        if (LowPass) {
-            HighPass = false;
+    if (button == &LowShelvingButton) {
+        LowShelving = !LowShelving;
+        if (LowShelving) {
+            HighShelving = false;
         }
-        getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::LowPassParam, LowPass);
+        getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::LowShelvingParam, LowShelving);
     }
     if (button == &NormalButton) {
-        LowPass = false;
-        HighPass = false;
-        getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::HighPassParam, HighPass);
-        getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::LowPassParam, LowPass);
+        LowShelving = false;
+        HighShelving = false;
+        getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::HighShelvingParam, HighShelving);
+        getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::LowShelvingParam, LowShelving);
     }
     
 }
@@ -172,21 +171,7 @@ void NewProjectAudioProcessorEditor::buttonClicked(Button * button)
 void NewProjectAudioProcessorEditor::comboBoxChanged(juce::ComboBox *comboBoxThatHasChanged)
 {
     if (comboBoxThatHasChanged == &ModBox) {
-//        if (ModBox.getSelectedId() == 1) {
-//            getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::ModeParam, 0);
-//        }
-//        else if(ModBox.getSelectedId() == 2)
-//        {
-//            getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::ModeParam, 1);
-//        }
-//        else if (ModBox.getSelectedId() == 3)
-//        {
-//            getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::ModeParam, 2);
-//        }
-//        else if(ModBox.getSelectedId() == 4)
-//        {
-//            
-//        }
+
         getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::ModeParam, ModBox.getSelectedId()-1);
     }
 }
@@ -199,8 +184,8 @@ void NewProjectAudioProcessorEditor::timerCallback()
     RrateSlider.setValue(ourProcessor->delay_sec);
     ReverbSlider.setValue(ourProcessor->reverb_volumn);
     intensitySlider.setValue(ourProcessor->intensity);
-    HighPassSlider.setValue(ourProcessor->CutoffHigh);
-    LowPassSlider.setValue(ourProcessor->CutoffHigh);
+    HighShelvingSlider.setValue(ourProcessor->CutoffHigh);
+    ShelvingGainSlider.setValue(ourProcessor->ShelvingGain);
     
     
 }
@@ -271,13 +256,14 @@ void NewProjectAudioProcessorEditor::sliderValueChanged(juce::Slider *slider)
     {
         getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::RangeParam, InputRangeSlider.getValue());
     }
-    else if(slider == & HighPassSlider)
+    else if(slider == & HighShelvingSlider)
     {
-        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::CutoffHighParam, HighPassSlider.getValue());
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::CutoffHighParam, HighShelvingSlider.getValue());
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::CutoffLowParam, HighShelvingSlider.getValue());
     }
-    else if(slider == & LowPassSlider)
+    else if(slider == & ShelvingGainSlider)
     {
-        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::CutoffLowParam, LowPassSlider.getValue());
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::ShelvingGainParam, ShelvingGainSlider.getValue());
     }
 }
 //==============================================================================
@@ -291,17 +277,17 @@ void NewProjectAudioProcessorEditor::paint (Graphics& g)
     if (Old) {
         OldButton.setColour(0, Colours::blue);
     }
-    else OldButton.setColour(0, Colours::orchid);
-    if (HighPass) {
-        HighPassButton.setColour(1, Colours::blue);
+    else OldButton.setColour(0, Colours::white);
+    if (HighShelving) {
+        HighShelvingButton.setColour(0, Colours::blue);
     }
     else
-       HighPassButton.setColour(1, Colours::orchid);
-    if (LowPass) {
-        LowPassButton.setColour(1,Colours::blue);
+       HighShelvingButton.setColour(0, Colours::white);
+    if (LowShelving) {
+        LowShelvingButton.setColour(0,Colours::blue);
         
     }
-    else LowPassButton.setColour(1,Colours::orchid);
+    else LowShelvingButton.setColour(0,Colours::white);
 }
 
 void NewProjectAudioProcessorEditor::resized()
@@ -324,13 +310,13 @@ void NewProjectAudioProcessorEditor::resized()
     FBLabel.setBounds(350-10, 215, 120, 30);
     FBGainSlider.setBounds(350-10, 245, 120, 40);
     
-    HighpassLabel.setBounds(530, 135, 120, 30);
-    HighPassSlider.setBounds(530, 165, 120, 40);
-    LowpassLabel.setBounds(530, 215, 120, 30);
-    LowPassSlider.setBounds(530, 245, 120, 40);
+    HighShelvingLabel.setBounds(530, 135, 120, 30);
+    HighShelvingSlider.setBounds(530, 165, 120, 40);
+    LowShelvingLabel.setBounds(530, 215, 120, 30);
+    ShelvingGainSlider.setBounds(530, 245, 120, 40);
     
-    HighPassButton.setBounds(530, 340, 80, 30);
-    LowPassButton.setBounds(530, 390, 80, 30);
+    HighShelvingButton.setBounds(530, 340, 80, 30);
+    LowShelvingButton.setBounds(530, 390, 80, 30);
     NormalButton.setBounds(530, 440, 80, 30);
     OldButton.setBounds(350, 350, 60, 30);
     InputRangeSlider.setBounds(170,350,100,30);

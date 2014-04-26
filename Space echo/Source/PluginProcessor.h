@@ -77,10 +77,11 @@ public:
         RepeatParam,
         ReverbParam,
         oldParam,
-        HighPassParam,
-        LowPassParam,
+        HighShelvingParam,
+        LowShelvingParam,
         CutoffHighParam,
         CutoffLowParam,
+        ShelvingGainParam,
         FBParam,
         RangeParam,
         numParam
@@ -97,8 +98,9 @@ public:
     float CutoffHigh;
     bool bypass;
     bool old;
-    bool HighPass;
-    bool LowPass;
+    bool HighShelving;
+    bool LowShelving;
+    float ShelvingGain;
     int mode;
     
     int lastUIWidth,lastUIHeight;
@@ -108,8 +110,8 @@ private:
     WhiteNoiseGen * myNoise;
     WavShaper   * myShaper;
     Reverb * myReverb;
-    class LowPass *myLowPass;
-    class HighPass * myHighPass;
+    class LowShelving *myLowShelving;
+    class HighShelving * myHighShelving;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NewProjectAudioProcessor)
 };
 

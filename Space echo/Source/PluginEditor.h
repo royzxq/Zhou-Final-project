@@ -39,12 +39,12 @@ public:
     void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
     
 private:
-    Label title,FBLabel,intensityLabel,RrateLabel,ReverbLabel,ModeLabel,SaturationLabel,HighpassLabel,LowpassLabel;
-    Slider FBGainSlider,intensitySlider,RrateSlider,ReverbSlider,ModeSlider,InputRangeSlider,HighPassSlider,LowPassSlider;
+    Label title,FBLabel,intensityLabel,RrateLabel,ReverbLabel,ModeLabel,SaturationLabel,HighShelvingLabel,LowShelvingLabel;
+    Slider FBGainSlider,intensitySlider,RrateSlider,ReverbSlider,ModeSlider,InputRangeSlider,HighShelvingSlider,ShelvingGainSlider;
     ComboBox ModBox;
     
     TextButton OldButton;
-    TextButton NormalButton,HighPassButton,LowPassButton;
+    TextButton NormalButton,HighShelvingButton,LowShelvingButton;
     ScopedPointer<ResizableCornerComponent> resizer;
     ComponentBoundsConstrainer resizeLimits;
     GroupComponent DelayGroup,ReverbGroup,FilterGroup;
@@ -52,8 +52,8 @@ private:
     {
         return static_cast<NewProjectAudioProcessor*>(getAudioProcessor());
     }
-    bool HighPass;
-    bool LowPass;
+    bool HighShelving;
+    bool LowShelving;
     bool Old;
     
     float PreIntense;

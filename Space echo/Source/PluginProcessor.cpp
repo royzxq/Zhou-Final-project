@@ -29,8 +29,9 @@ NewProjectAudioProcessor::NewProjectAudioProcessor()
     repeat_rate = defaultRrate;
     old = defaultOld;
     bypass = defaultBypass;
-    HighPass = false;
-    LowPass = false;
+    HighShelving = false;
+    LowShelving = false;
+    ShelvingGain = 1.0;
     reverb_volumn = defaultReverb;
     InRange = defaultRange;
     CutoffHigh = 0.0;
@@ -82,19 +83,22 @@ void NewProjectAudioProcessor::setParameter (int index, float newValue)
         case ReverbParam:
             reverb_volumn = newValue;
             break;
-        case HighPassParam:
-            HighPass = !HighPass;
-            LowPass = false;
+        case HighShelvingParam:
+            HighShelving = !HighShelving;
+            LowShelving = false;
             break;
-        case LowPassParam:
-            LowPass = ! LowPass;
-            HighPass = false;
+        case LowShelvingParam:
+            LowShelving = ! LowShelving;
+            HighShelving = false;
             break;
         case CutoffHighParam:
             CutoffHigh = newValue;
             break;
         case CutoffLowParam:
             CutoffLow = newValue;
+            break;
+        case ShelvingGainParam:
+            ShelvingGain = newValue;
             break;
         case oldParam:
             old = !old;
@@ -197,8 +201,8 @@ void NewProjectAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     myMultiDelay = new MultiTapDelay(sampleRate,2);
-    myHighPass = new class HighPass(CutoffHigh,2);
-    myLowPass = new class LowPass(CutoffLow,2);
+    myHighShelving = new class HighShelving(CutoffHigh,ShelvingGain,2);
+    myLowShelving = new class LowShelving(CutoffLow,ShelvingGain, 2);
     myNoise = new WhiteNoiseGen(0,0.007);
     myShaper = new WavShaper(4);
 }
@@ -210,10 +214,10 @@ void NewProjectAudioProcessor::releaseResources()
     delete  myMultiDelay;
     delete myNoise;
     delete myShaper;
-    delete myLowPass;
-    delete myHighPass;
-    LowPass = 0;
-    myHighPass = 0;
+    delete myLowShelving;
+    delete myHighShelving;
+    LowShelving = 0;
+    myHighShelving = 0;
     myMultiDelay = 0 ;
     myNoise = 0 ;
     myShaper = 0 ;
@@ -268,17 +272,19 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
            myNoise -> generate(input, numChannels, numSamples);
         }
         
-        myShaper -> setRange(InRange);
+        //myShaper -> setRange(InRange);
         
         myShaper -> process(input, input, numChannels, numSamples);
-        if (HighPass) {
-            myHighPass -> setCutoff(CutoffHigh);
-            myHighPass -> process(input, input, numSamples);
+        if (HighShelving) {
+            myHighShelving -> setCutoff(CutoffHigh);
+            myHighShelving -> setGain(ShelvingGain);
+            myHighShelving -> process(input, input, numSamples);
         }
-        else if (LowPass)
+        else if (LowShelving)
         {
-            myLowPass -> setCutoff(CutoffLow);
-            myLowPass -> process(input, input, numSamples);
+            myLowShelving -> setCutoff(CutoffLow);
+            myLowShelving -> setGain(ShelvingGain);
+            myLowShelving -> process(input, input, numSamples);
         }
         buffer.setDataToReferTo(input, numChannels, numSamples);
     

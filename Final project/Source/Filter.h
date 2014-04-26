@@ -88,8 +88,46 @@ public:
     void process(float ** input, float ** output , int NumSamples);
 };
 
+class LowShelving{
+public:
+    LowShelving(float cutoff, float G, int iChannel):m_Wc(cutoff),m_G(G), m_iChannel(iChannel){
+        V0 = powf(10, m_G/20);
+        H0 = V0 -1 ;
+        if (m_G >=0 ) {
+            m_C = (tanf(M_PI*m_Wc/2)-1)/(tanf(M_PI*m_Wc)+1);
 
+        }
+        else
+            m_C = (tanf(M_PI*m_Wc/2)-V0)/(tanf(M_PI*m_Wc)+V0);
 
+        m_Xh = new float[m_iChannel];
+        memset(m_Xh,0.0,sizeof(float)*m_iChannel);
+    }
+    virtual ~LowShelving(){
+        delete [] m_Xh;
+        m_Xh = 0 ;
+    }
+    void setGain(float G);
+    void setCutoff(float cutoff);
+    virtual void  process(float ** input, float ** output , int NumSamples);
 
+protected:
+    float m_Wc;
+    float m_G;
+    float V0, H0;
+    int m_iChannel;
+    float m_C;
+    float *m_Xh;
+};
+
+class HighShelving : public LowShelving{
+public:
+    HighShelving(float cutoff, float G, int iChannel):LowShelving(cutoff,G,iChannel){};
+    ~HighShelving(){
+        delete [] m_Xh;
+        m_Xh = 0 ;
+    }
+    void  process(float ** input, float ** output , int NumSamples);
+};
 
 #endif /* defined(__FinalProject__Filter__) */
