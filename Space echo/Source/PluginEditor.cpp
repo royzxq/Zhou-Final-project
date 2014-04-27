@@ -14,7 +14,7 @@
 
 //==============================================================================
 NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioProcessor* ownerFilter)
-: AudioProcessorEditor (ownerFilter),title("","PSYeCHO"),FBLabel("","FeedBack Gain:"),intensityLabel("","Intensity:"),RrateLabel("","Repeat Rate:"),ReverbLabel("","Reverb Volumn:"),ModeLabel("","Select Sound Effect:"),SaturationLabel("","Saturation Level"), HighShelvingLabel("","HighShelving cutoff"),LowShelvingLabel("","Gain"), ModBox("Mode Selector Box"),DelayGroup("Delay parameter"),ReverbGroup("Reverb parameter"),FilterGroup("Filter cuttoffs"), HighShelving(false),LowShelving(false),Old(false),PreIntense(0.0),PreFBGain(0.0),PreRate(0.0),PreReverb(0.0)
+: AudioProcessorEditor (ownerFilter),title("","PSYeCHO"),FBLabel("","FeedBack Gain:"),intensityLabel("","Intensity:"),RrateLabel("","Repeat Rate:"),ReverbLabel("","Reverb Volumn:"),ModeLabel("","Select Sound Effect:"),SaturationLabel("","Saturation Level"), HighShelvingLabel("","HighShelving cutoff"),LowShelvingLabel("","Lowshelving cutoff"),GainLabel("","Gain"), ModBox("Mode Selector Box"),DelayGroup("Delay parameter"),ReverbGroup("Reverb parameter"),FilterGroup("Filter cuttoffs"), HighShelving(false),LowShelving(false),Old(false),PreIntense(0.0),PreFBGain(0.0),PreRate(0.0),PreReverb(0.0)
 {
     // This is where our plugin's editor size is set.
     addAndMakeVisible(FBGainSlider);
@@ -52,13 +52,19 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     HighShelvingSlider.setSliderStyle(Slider::Rotary);
     HighShelvingSlider.addListener(this);
     HighShelvingSlider.setRange(0.0, 1.0, 0.1);
-    HighShelvingSlider.setValue(0.0);
+    HighShelvingSlider.setValue(0.5);
 
     addAndMakeVisible(ShelvingGainSlider);
     ShelvingGainSlider.setSliderStyle(Slider::Rotary);
     ShelvingGainSlider.addListener(this);
     ShelvingGainSlider.setRange(-15.0, 15.0, 0.1);
     ShelvingGainSlider.setValue(6.0);
+    
+    addAndMakeVisible(LowShelvingSlider);
+    LowShelvingSlider.setSliderStyle(Slider::Rotary);
+    LowShelvingSlider.addListener(this);
+    LowShelvingSlider.setRange(0.0, 1.0);
+    LowShelvingSlider.setValue(0.5);
     
     addAndMakeVisible(NormalButton);
     NormalButton.setButtonText("No filter");
@@ -82,7 +88,7 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     ModBox.setTextWhenNothingSelected("Single Tap Delay");
     ModBox.addItem("Single Tap Delay", 1);
     ModBox.addItem("MultiTap Delay", 2);
-    ModBox.addItem("Inverse Delay", 3);
+    ModBox.addItem("Stereo Delay", 3);
     ModBox.addItem("Reverb", 4);
     ModBox.addItem("Single Delay with Reverb", 5);
     ModBox.addListener(this);
@@ -111,6 +117,7 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     addAndMakeVisible(SaturationLabel);
     addAndMakeVisible(HighShelvingLabel);
     addAndMakeVisible(LowShelvingLabel);
+    addAndMakeVisible(GainLabel);
     
     addAndMakeVisible(resizer = new ResizableCornerComponent(this,&resizeLimits));
     
@@ -128,10 +135,9 @@ NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioP
     
     SaturationLabel.attachToComponent(&InputRangeSlider, true);
     
-    //ByShelvingButton.setClickingTogglesState(true);
-    //OldButton.setClickingTogglesState(true);
-    //HighShelvingButton.setClickingTogglesState(true);
-    //LowShelvingButton.setClickingTogglesState(true);
+    OldButton.setClickingTogglesState(true);
+    HighShelvingButton.setClickingTogglesState(true);
+    LowShelvingButton.setClickingTogglesState(true);
 }
 
 NewProjectAudioProcessorEditor::~NewProjectAudioProcessorEditor()
@@ -147,16 +153,10 @@ void NewProjectAudioProcessorEditor::buttonClicked(Button * button)
     }
     if (button == &HighShelvingButton) {
         HighShelving = !HighShelving;
-        if (HighShelving) {
-            LowShelving = false;
-        }
         getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::HighShelvingParam, HighShelving);
     }
     if (button == &LowShelvingButton) {
         LowShelving = !LowShelving;
-        if (LowShelving) {
-            HighShelving = false;
-        }
         getProcessor()->setParameterNotifyingHost(NewProjectAudioProcessor::LowShelvingParam, LowShelving);
     }
     if (button == &NormalButton) {
@@ -259,7 +259,11 @@ void NewProjectAudioProcessorEditor::sliderValueChanged(juce::Slider *slider)
     else if(slider == & HighShelvingSlider)
     {
         getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::CutoffHighParam, HighShelvingSlider.getValue());
-        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::CutoffLowParam, HighShelvingSlider.getValue());
+
+    }
+    else if(slider == & LowShelvingSlider)
+    {
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::CutoffLowParam, LowShelvingSlider.getValue());
     }
     else if(slider == & ShelvingGainSlider)
     {
@@ -298,7 +302,7 @@ void NewProjectAudioProcessorEditor::resized()
     
     DelayGroup.setBounds(280, 120, 230, 200);
     ReverbGroup.setBounds(45, 120, 230, 200);
-    FilterGroup.setBounds(515, 120, 150, 200);
+    FilterGroup.setBounds(515, 120, 150, 230);
     
     intensityLabel.setBounds(100-5, 135, 120, 30);
     intensitySlider.setBounds(100-5, 165, 120, 40);
@@ -311,12 +315,14 @@ void NewProjectAudioProcessorEditor::resized()
     FBGainSlider.setBounds(350-10, 245, 120, 40);
     
     HighShelvingLabel.setBounds(530, 135, 120, 30);
-    HighShelvingSlider.setBounds(530, 165, 120, 40);
-    LowShelvingLabel.setBounds(530, 215, 120, 30);
-    ShelvingGainSlider.setBounds(530, 245, 120, 40);
+    HighShelvingSlider.setBounds(530, 160, 120, 40);
+    LowShelvingLabel.setBounds(530, 205, 120, 30);
+    LowShelvingSlider.setBounds(530, 230, 120, 40);
+    GainLabel.setBounds(530, 275, 120, 30);
+    ShelvingGainSlider.setBounds(530, 300, 120, 40);
     
-    HighShelvingButton.setBounds(530, 340, 80, 30);
-    LowShelvingButton.setBounds(530, 390, 80, 30);
+    HighShelvingButton.setBounds(530, 360, 80, 30);
+    LowShelvingButton.setBounds(530, 400, 80, 30);
     NormalButton.setBounds(530, 440, 80, 30);
     OldButton.setBounds(350, 350, 60, 30);
     InputRangeSlider.setBounds(170,350,100,30);

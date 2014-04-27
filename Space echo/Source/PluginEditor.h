@@ -39,8 +39,8 @@ public:
     void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
     
 private:
-    Label title,FBLabel,intensityLabel,RrateLabel,ReverbLabel,ModeLabel,SaturationLabel,HighShelvingLabel,LowShelvingLabel;
-    Slider FBGainSlider,intensitySlider,RrateSlider,ReverbSlider,ModeSlider,InputRangeSlider,HighShelvingSlider,ShelvingGainSlider;
+    Label title,FBLabel,intensityLabel,RrateLabel,ReverbLabel,ModeLabel,SaturationLabel,HighShelvingLabel,LowShelvingLabel, GainLabel;
+    Slider FBGainSlider,intensitySlider,RrateSlider,ReverbSlider,ModeSlider,InputRangeSlider,HighShelvingSlider,LowShelvingSlider,ShelvingGainSlider;
     ComboBox ModBox;
     
     TextButton OldButton;

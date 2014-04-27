@@ -85,11 +85,9 @@ void NewProjectAudioProcessor::setParameter (int index, float newValue)
             break;
         case HighShelvingParam:
             HighShelving = !HighShelving;
-            LowShelving = false;
             break;
         case LowShelvingParam:
             LowShelving = ! LowShelving;
-            HighShelving = false;
             break;
         case CutoffHighParam:
             CutoffHigh = newValue;
@@ -272,7 +270,7 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
            myNoise -> generate(input, numChannels, numSamples);
         }
         
-        //myShaper -> setRange(InRange);
+        myShaper -> setRange(InRange);
         
         myShaper -> process(input, input, numChannels, numSamples);
         if (HighShelving) {
@@ -280,7 +278,7 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
             myHighShelving -> setGain(ShelvingGain);
             myHighShelving -> process(input, input, numSamples);
         }
-        else if (LowShelving)
+        if (LowShelving)
         {
             myLowShelving -> setCutoff(CutoffLow);
             myLowShelving -> setGain(ShelvingGain);

@@ -59,12 +59,12 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
                     mm ++;
                 }
                 output[i][j] =  m_fFBgain*oTap1[i]->getPostInc() + pTap1[i]->getPostInc();
-                float nn = output[i][j];
                 oTap1[i]->putPostInc(output[i][j]);
                 oTap2[i]->putPostInc(output[i][j]);
                 oTap3[i]->putPostInc(output[i][j]);
+                output[i][j] /= 2;
                 output[i][j] += input[i][j];
-                //output[i][j] /= 2;
+                //
 
             }
         }
@@ -91,7 +91,7 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
     }
     else if (modeSelector == inversDelay)
     {
-        float alfa = 0.5;
+        float alfa = 0.8;
         for (int j = 0 ; j < iBlocksize; j++) {
             for (int i = 0 ; i < 2; i++) {
                 if (i == 1) {
@@ -102,8 +102,9 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
                     oTap1[i]->putPostInc(output[i][j]);
                     oTap2[i]->putPostInc(output[i][j]);
                     oTap3[i]->putPostInc(output[i][j]);
-                    output[i][j] += input[i][j];
                     output[i][j] /= 2;
+                    output[i][j] += input[i][j];
+                    
                 }
                 else{
                     pTap1[i]->putPostInc(input[i][j]);
@@ -113,8 +114,9 @@ void MultiTapDelay::process(float **input, float **output, int iBlocksize)
                     oTap1[i]->putPostInc(output[i][j]);
                     oTap2[i]->putPostInc(output[i][j]);
                     oTap3[i]->putPostInc(output[i][j]);
-                    output[i][j] += input[i][j];
                     output[i][j] /= 2;
+                    output[i][j] += input[i][j];
+                    
                     
                 }
             }
