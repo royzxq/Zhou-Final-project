@@ -11,25 +11,25 @@
 #include "Reverb.h"
 
 
-void Reverb::setDecay(float delay)
+void myReverb::setDecay(float delay)
 {
     m_Decay = delay;
     myTank -> setDecay(m_Decay);
 }
 
-void Reverb::setSwitch(bool sw)
+void myReverb::setSwitch(bool sw)
 {
     m_Switch = sw;
     myTank -> InputChannel(m_Switch);
 }
 
-void Reverb::setRemix(float remix)
+void myReverb::setRemix(float remix)
 {
     m_Remix = remix;
     myTank -> setRatio(m_Remix);
 }
 
-void Reverb::process(float **input, float **output, int NumChannel, int NumSample)
+void myReverb::process(float **input, float **output, int NumChannel, int NumSample)
 {
     if(NumChannel != 2)
     {

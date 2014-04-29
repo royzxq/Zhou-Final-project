@@ -14,10 +14,10 @@
 #include "Diffusion.h"
 #include "Tank.h"
 
-class Reverb
+class myReverb
 {
 public:
-    Reverb(float samplerate):m_SampleRate(samplerate),m_Switch(true),m_Gain(0){
+    myReverb(float samplerate):m_SampleRate(samplerate),m_Switch(true),m_Gain(0){
         myDiffusionL = new DiffusionLine(0.05*m_SampleRate,101,158,367,409,m_SampleRate);
         myDiffusionR = new DiffusionLine(0.050*m_SampleRate,103,147,353,389,m_SampleRate);
         myDiffusionL -> setParamerets(0.9995, 0.5, -0.75, 0.625, 0.5);
@@ -34,7 +34,7 @@ public:
         myTank -> setDelay(2777, 3203, 4);
         
     }
-    ~Reverb(){
+    ~myReverb(){
         delete myDiffusionL;
         delete myDiffusionR;
         delete myTank;

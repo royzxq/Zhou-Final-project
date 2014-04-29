@@ -39,14 +39,12 @@ NewProjectAudioProcessor::NewProjectAudioProcessor()
     lastUIWidth = 700;
     lastUIHeight = 400;
     mode = defaultMode;
-    myReverb = new Reverb();
    // fb_gain = 0.5;
 }
 
 NewProjectAudioProcessor::~NewProjectAudioProcessor()
 {
-    delete myReverb;
-    myReverb = 0 ;
+
 }
 
 //==============================================================================
@@ -203,6 +201,12 @@ void NewProjectAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     myLowShelving = new class LowShelving(CutoffLow,ShelvingGain, 2);
     myNoise = new WhiteNoiseGen(0,0.007);
     myShaper = new WavShaper(4);
+#ifdef REVERB
+    myReverb = new class myReverb(sampleRate);
+#else
+    myReverb = new Reverb();
+#endif
+
 }
 
 void NewProjectAudioProcessor::releaseResources()
@@ -214,6 +218,8 @@ void NewProjectAudioProcessor::releaseResources()
     delete myShaper;
     delete myLowShelving;
     delete myHighShelving;
+    delete myReverb;
+    myReverb = 0 ;
     LowShelving = 0;
     myHighShelving = 0;
     myMultiDelay = 0 ;
@@ -240,6 +246,13 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
         myShaper -> process(input, input, numChannels, numSamples);
    
         if (mode == 3) {
+#ifdef REVERB
+            myReverb -> setDecay(reverb_volumn);
+            myReverb -> setRemix(intensity);
+            myReverb -> setSwitch(true);
+            myReverb -> process(input, input, numChannels, numSamples);
+#else
+            
             juce::Reverb::Parameters newParam;
             newParam.roomSize = reverb_volumn;
             newParam.damping = intensity;
@@ -249,7 +262,7 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
             newParam.freezeMode = 0.4;
             myReverb -> setParameters(newParam);
             myReverb -> processStereo(input[0], input[1], numSamples);
-
+#endif
         }
         else if(mode<3){
             myMultiDelay -> setDelay(repeat_rate);
@@ -262,16 +275,23 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
             myMultiDelay -> setFBgain(fb_gain);
             myMultiDelay -> setMode(0);
             myMultiDelay -> process(input, input, numSamples);
+#ifdef REVERB
+            myReverb -> setDecay(reverb_volumn);
+            myReverb -> setRemix(intensity);
+            myReverb -> setSwitch(true);
+            myReverb -> process(input, input, numChannels, numSamples);
+#else
+            
             juce::Reverb::Parameters newParam;
             newParam.roomSize = reverb_volumn;
             newParam.damping = intensity;
-            newParam.wetLevel = 1.0;
-            newParam.dryLevel = 0.1;
+            newParam.wetLevel = 0.6;
+            newParam.dryLevel = 0.4;
             newParam.width = 0.5;
             newParam.freezeMode = 0.4;
             myReverb -> setParameters(newParam);
             myReverb -> processStereo(input[0], input[1], numSamples);
-            
+#endif
         }
     
         if (HighShelving) {

@@ -178,19 +178,16 @@ void NewProjectAudioProcessorEditor::comboBoxChanged(juce::ComboBox *comboBoxTha
 
 void NewProjectAudioProcessorEditor::timerCallback()
 {
-    NewProjectAudioProcessor * ourProcessor = getProcessor();
-    
-    FBGainSlider.setValue(ourProcessor->fb_gain);
-    RrateSlider.setValue(ourProcessor->delay_sec);
-    ReverbSlider.setValue(ourProcessor->reverb_volumn);
-    intensitySlider.setValue(ourProcessor->intensity);
-    HighShelvingSlider.setValue(ourProcessor->CutoffHigh);
-    ShelvingGainSlider.setValue(ourProcessor->ShelvingGain);
+    //NewProjectAudioProcessor * ourProcessor = getProcessor();
     
     
-}
-void NewProjectAudioProcessorEditor::startTimer(int intervalInMilliseconds)
-{
+//    FBGainSlider.setValue(ourProcessor->fb_gain);
+//    RrateSlider.setValue(ourProcessor->delay_sec);
+//    ReverbSlider.setValue(ourProcessor->reverb_volumn);
+//    intensitySlider.setValue(ourProcessor->intensity);
+//    HighShelvingSlider.setValue(ourProcessor->CutoffHigh);
+//    ShelvingGainSlider.setValue(ourProcessor->ShelvingGain);
+//    
     float newFBvalue = FBGainSlider.getValue();
     if (fabs(newFBvalue-PreFBGain)>0.01) {
         PreFBGain = 0.9 * PreFBGain + 0.1 * newFBvalue;
@@ -231,26 +228,22 @@ void NewProjectAudioProcessorEditor::startTimer(int intervalInMilliseconds)
         getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::ReverbParam, PreReverb);
     }
     
+    
+}
+void NewProjectAudioProcessorEditor::startTimer(int intervalInMilliseconds)
+{
+    
+    
 }
 void NewProjectAudioProcessorEditor::sliderValueChanged(juce::Slider *slider)
 {
-    //startTimer(5);
-    
-    if (slider == &FBGainSlider) {
+   
+    if (slider == & FBGainSlider) {
         getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::FBParam, slider->getValue());
     }
-    else if (slider == &intensitySlider){
-        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::IntensityParam,  slider->getValue());
-    }
-    else if(slider == &RrateSlider)
-    {
-        
-        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::RepeatParam,  slider->getValue());
-    }
-    else if(slider == & ReverbSlider)
-    {
-       
-        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::ReverbParam,  slider->getValue());
+    
+    if (slider == & RrateSlider) {
+        getProcessor() -> setParameterNotifyingHost(NewProjectAudioProcessor::RepeatParam, slider->getValue());
     }
     if (slider == & InputRangeSlider)
     {

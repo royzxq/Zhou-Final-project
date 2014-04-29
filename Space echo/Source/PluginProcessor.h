@@ -12,10 +12,17 @@
 #define PLUGINPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "juce_Reverb.h"
 #include "MyProject.h"
 #include "Noise.h"
 #include "Filter.h"
+
+#define REVERB
+
+#ifdef REVERB
+#include "Reverb.h"
+#else
+#include "juce_Reverb.h"
+#endif
 
 //class LowPass;
 //==============================================================================
@@ -109,7 +116,11 @@ private:
     MultiTapDelay * myMultiDelay;
     WhiteNoiseGen * myNoise;
     WavShaper   * myShaper;
+#ifdef REVERB
+    myReverb * myReverb;
+#else
     Reverb * myReverb;
+#endif
     class LowShelving *myLowShelving;
     class HighShelving * myHighShelving;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NewProjectAudioProcessor)

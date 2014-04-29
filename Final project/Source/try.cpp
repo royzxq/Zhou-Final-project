@@ -9,10 +9,10 @@
 */
 
 #include "try.h"
-void TankBlock::setAPDelay(float delay1_sec, float delay2_sec)
+void TankBlock::setAPDelay(float delay1_sam, float delay2_sam)
 {
-    myAP1->initInstances(delay1_sec*m_SampleRate);
-    myAP2->initInstances(delay2_sec*m_SampleRate);
+    myAP1->initInstances(delay1_sam);
+    myAP2->initInstances(delay2_sam);
     
 }
 
