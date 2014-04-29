@@ -35,9 +35,9 @@ void ShelvingBPF::initSampleRate(float fSampleRate)
     sampleRate = fSampleRate;
 }
 
-void ShelvingBPF::calculatecoeffLPFShelf(float gain, float freqcutoffLPF)
+void ShelvingBPF::calculatecoeffLPFShelf(float gaindB)
 {
-    //float ffreqcutoffLPF = 300.0;
+    float freqcutoffLPF = 300.0;
 	float thetac = 2*M_PI*freqcutoffLPF/sampleRate;
 	float mu = pow(10.0,(gain/20.0));
 	float beta = 4/(1+mu);
@@ -57,9 +57,9 @@ void ShelvingBPF::calculatecoeffLPFShelf(float gain, float freqcutoffLPF)
 	m_pLPFShelf.m_f_b2 = b2lpf;
 }
 
-void ShelvingBPF::calculatecoeffHPFShelf(float gain, float freqCutoffHPF)
+void ShelvingBPF::calculatecoeffHPFShelf(float gaindB)
 {
-    //float fFreqCutoffHPF = 3000.0;
+    float freqCutoffHPF = 3000.0;
 	float thetac = 2*M_PI*freqCutoffHPF/sampleRate;
 	float mu = pow(10.0,(gain/20.0));
 	float beta = (1+mu)/4;

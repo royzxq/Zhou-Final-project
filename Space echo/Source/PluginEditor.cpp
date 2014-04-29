@@ -14,7 +14,7 @@
 
 //==============================================================================
 NewProjectAudioProcessorEditor::NewProjectAudioProcessorEditor (NewProjectAudioProcessor* ownerFilter)
-: AudioProcessorEditor (ownerFilter),title("","PSYeCHO"),FBLabel("","FeedBack Gain:"),intensityLabel("","Intensity:"),RrateLabel("","Repeat Rate:"),ReverbLabel("","Reverb Volumn:"),ModeLabel("","Select Sound Effect:"),SaturationLabel("","Saturation Level"), HighShelvingLabel("","HighShelving cutoff"),LowShelvingLabel("","Lowshelving cutoff"),GainLabel("","Gain"), ModBox("Mode Selector Box"),DelayGroup("Delay parameter"),ReverbGroup("Reverb parameter"),FilterGroup("Filter cuttoffs"), HighShelving(false),LowShelving(false),Old(false),PreIntense(0.0),PreFBGain(0.0),PreRate(0.0),PreReverb(0.0)
+: AudioProcessorEditor (ownerFilter),title("","PSYeCHO"),FBLabel("","FeedBack Gain:"),intensityLabel("","Remix:"),RrateLabel("","Repeat Rate:"),ReverbLabel("","Decay:"),ModeLabel("","Select Sound Effect:"),SaturationLabel("","Saturation Level"), HighShelvingLabel("","HighShelving cutoff"),LowShelvingLabel("","Lowshelving cutoff"),GainLabel("","Gain"), ModBox("Mode Selector Box"),DelayGroup("Delay parameter"),ReverbGroup("Reverb parameter"),FilterGroup("Filter cuttoffs"), HighShelving(false),LowShelving(false),Old(false),PreIntense(0.0),PreFBGain(0.0),PreRate(0.0),PreReverb(0.0)
 {
     // This is where our plugin's editor size is set.
     addAndMakeVisible(FBGainSlider);

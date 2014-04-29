@@ -10,7 +10,7 @@
 #define __FinalProject__Filter__
 #include <iostream>
 #include <cmath>
-//#include "RingBuffer.h"
+#include "RingBuffer.h"
 //class FilterBase{
 //public:
 //// the init parameters with maximum order 5
@@ -128,6 +128,27 @@ public:
         m_Xh = 0 ;
     }
     void  process(float ** input, float ** output , int NumSamples);
+};
+
+class DelayClass
+{
+public:
+    DelayClass(float delay_sec, float samplerate):m_delaySec(delay_sec),m_sampleRate(samplerate){
+        m_delaySam = m_delaySec*m_sampleRate;
+        m_Buffer = new CRingBuffer<float>(m_delaySam);
+        m_Buffer -> resetInstance();
+    }
+    ~DelayClass(){
+        delete m_Buffer;
+        m_Buffer = 0;
+    }
+    float process(float input);
+private:
+    float m_delaySec;
+    float m_delaySam;
+    float m_sampleRate;
+    CRingBuffer<float> * m_Buffer;
+    
 };
 
 #endif /* defined(__FinalProject__Filter__) */

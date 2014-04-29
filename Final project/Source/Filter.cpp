@@ -78,3 +78,10 @@ void HighShelving::process(float **input, float **output, int NumSamples)
         }
     }
 }
+
+float DelayClass::process(float input)
+{
+    float output = m_Buffer->getPostInc();
+    m_Buffer -> putPostInc(input);
+    return output;
+}

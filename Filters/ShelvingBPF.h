@@ -20,8 +20,8 @@ public:
     
     void initSampleRate(float fSampleRate);
     
-    void calculatecoeffLPFShelf( float gain, float freqcutoffLPF);
-    void calculatecoeffHPFShelf( float gain, float freqCutoffHPF);
+    void calculatecoeffLPFShelf( float gaindB);
+    void calculatecoeffHPFShelf( float gaindB);
     
     void process(float input, float output);
     

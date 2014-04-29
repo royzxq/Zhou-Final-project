@@ -231,6 +231,13 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
         float ** input = buffer.getArrayOfChannels();
         const int numChannels = buffer.getNumChannels();
     
+        if (old) {
+            myNoise -> generate(input, numChannels, numSamples);
+        }
+        
+        myShaper -> setRange(InRange);
+        
+        myShaper -> process(input, input, numChannels, numSamples);
    
         if (mode == 3) {
             juce::Reverb::Parameters newParam;
@@ -266,13 +273,7 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
             myReverb -> processStereo(input[0], input[1], numSamples);
             
         }
-        if (old) {
-           myNoise -> generate(input, numChannels, numSamples);
-        }
-        
-        myShaper -> setRange(InRange);
-        
-        myShaper -> process(input, input, numChannels, numSamples);
+    
         if (HighShelving) {
             myHighShelving -> setCutoff(CutoffHigh);
             myHighShelving -> setGain(ShelvingGain);
