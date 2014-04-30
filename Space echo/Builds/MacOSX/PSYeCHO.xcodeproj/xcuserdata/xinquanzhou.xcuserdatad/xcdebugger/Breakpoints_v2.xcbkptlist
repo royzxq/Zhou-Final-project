@@ -9,13 +9,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../Source/PluginProcessor.cpp"
-            timestampString = "420501508.074596"
+            filePath = "../../../Final project/Source/Reverb.cpp"
+            timestampString = "420513804.350205"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "247"
-            endingLineNumber = "247"
-            landmarkName = "NewProjectAudioProcessor::processBlock(AudioSampleBuffer&amp; buffer, MidiBuffer&amp; midiMessages)"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
+            landmarkName = "myReverb::process(float **input, float **output, int NumChannel, int NumSample)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -25,29 +25,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../Source/PluginProcessor.cpp"
-            timestampString = "420501510.434514"
+            filePath = "../../../Final project/Source/Diffusion.cpp"
+            timestampString = "420514633.119633"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "246"
-            endingLineNumber = "246"
-            landmarkName = "NewProjectAudioProcessor::processBlock(AudioSampleBuffer&amp; buffer, MidiBuffer&amp; midiMessages)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../Source/PluginProcessor.cpp"
-            timestampString = "420501805.247816"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "248"
-            endingLineNumber = "248"
-            landmarkName = "NewProjectAudioProcessor::processBlock(AudioSampleBuffer&amp; buffer, MidiBuffer&amp; midiMessages)"
+            startingLineNumber = "27"
+            endingLineNumber = "27"
+            landmarkName = "DiffusionLine::process(float input)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

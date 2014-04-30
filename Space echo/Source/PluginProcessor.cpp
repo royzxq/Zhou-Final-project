@@ -244,7 +244,6 @@ void NewProjectAudioProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffe
         myShaper -> setRange(InRange);
         
         myShaper -> process(input, input, numChannels, numSamples);
-   
         if (mode == 3) {
 #ifdef REVERB
             myReverb -> setDecay(reverb_volumn);
